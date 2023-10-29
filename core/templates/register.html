@@ -1,8 +1,14 @@
-{% extends 'layout.html' %}
-
-
 {% block body %}
 <div style= "margin-top : 100px;" class="jumbotron text-center">
 <br><br>
-    <p>Kaydol</p> </div>
+  
+    <p>Kaydol</p> 
+    <form method = "post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <br>
+        <button type = "submit" class = "btn btn-danger">Giriş Yap</button>
+    </form>
+</div>
+
 {% endblock  %}
