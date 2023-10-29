@@ -3,7 +3,15 @@ from .forms import RegisterForm
 from django.contrib.auth.models import User 
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
-# Create your views here.
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from .serializers import UserSerializer
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
 def register(request):
 
     form = RegisterForm(request.POST or None)
@@ -17,7 +25,6 @@ def register(request):
         newUser = User(username =username)
         newUser.set_password(password)
         newUser.save()
-        
         login(request,newUser)
         messages.success(request,"Başarıyla Kayıt Oldunuz...")
         return redirect("index")
