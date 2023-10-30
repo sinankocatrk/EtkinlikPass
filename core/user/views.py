@@ -17,6 +17,7 @@ class UserCreateView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+
 class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
@@ -34,7 +35,7 @@ class UserLoginView(APIView):
                 return Response({"message": "Kullanıcı adı veya parola hatalı."}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 def register(request):
 
     form = RegisterForm(request.POST or None)
@@ -48,7 +49,6 @@ def register(request):
         newUser = User(username =username)
         newUser.set_password(password)
         newUser.save()
-        
         login(request,newUser)
         messages.success(request,"Başarıyla Kayıt Oldunuz...")
         return redirect("index")
