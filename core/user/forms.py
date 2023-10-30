@@ -1,6 +1,6 @@
 from django import forms 
+from django.shortcuts import render,redirect
 
-from django import forms
 
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=50, label="Kullanıcı adı")
@@ -17,3 +17,7 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("Parolalar eşleşmiyor")
 
         return cleaned_data
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length= 50,label="Kullanıcı adı: ")
+    password = forms.CharField(max_length=20,label="Parola",widget =forms.PasswordInput)
