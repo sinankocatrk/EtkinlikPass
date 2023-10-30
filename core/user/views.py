@@ -36,6 +36,11 @@ class UserLoginView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class LogoutView(APIView):
+    def post(self, request):
+        logout(request)
+        return Response({'message': "Logout successful"})
+
 def register(request):
 
     form = RegisterForm(request.POST or None)
@@ -81,7 +86,9 @@ def loginUser(request):
 
 
 def logoutUser(request):
-    pass
+    logout(request)
+    messages.success(request,"Başarıyla çıkış yaptınız.")
+    return redirect("index")
 
 def index(request):
     return render(request,"index.html")
