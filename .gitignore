@@ -3,3 +3,6 @@
 # Virtual Environment
 env/
 venv/
+*.pyc
+*.sqlite3
+core/db.sqlite3
