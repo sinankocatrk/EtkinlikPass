@@ -19,6 +19,7 @@ from django.urls import path,include
 from advert import views
 from advert.views import about
 from user import views
+from event import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -26,5 +27,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index,name= "index"),    
     path('about/', about, name='about'),    
-    path('user/', include("user.urls")),     
+    path('user/', include("user.urls")),
+    path('event/', include("event.urls")), 
 ]
