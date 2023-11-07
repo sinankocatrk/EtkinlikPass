@@ -3,7 +3,7 @@ from event.models import Event
 from user.models import CustomUser as User 
 
 class Advert(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='adverts')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='adverts', null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     price = models.IntegerField(null=True)
     seller_description = models.TextField(null=True)

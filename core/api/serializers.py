@@ -1,10 +1,12 @@
 
 from rest_framework import serializers
-from django.contrib.auth.models import User
+
+from user.models import CustomUser
+from advert.models import Advert
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'email', 'password')
 
 
@@ -13,13 +15,19 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'password')
 
 class UserLogoutSerializer(serializers.Serializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ()
+
+class AdvertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advert
+        fields = ('event', 'author', 'price', 'seller_description')
+
 
 
 

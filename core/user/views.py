@@ -3,15 +3,8 @@ from .forms import LoginForm
 from django.contrib.auth.models import User 
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
-from .serializers import UserSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import UserLoginSerializer
+from .models import CustomUser
 from .forms import CustomUserCreationForm 
-
 
 
 
@@ -20,12 +13,27 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            # Başka işlemler yapabilirsiniz
+
+            fusername = form.cleaned_data['username']
+            femail = form.cleaned_data['email']
+            
+            if CustomUser.objects.filter(username=fusername).exists() :
+             
+                messages.error(request, "Bu Kullanıcı adı zaten kullanılıyor.")
+            elif CustomUser.objects.filter(email=femail).exists():
+                messages.error(request, "Bu e-posta adresi zaten kullanılıyor.")
+
+            else:
+                user = form.save()
+                login(request, user)
+                messages.success(request, "Başarıyla kayıt oldunuz.")
+                return render(request, 'index.html')
+
     else:
         form = CustomUserCreationForm()
+
     return render(request, 'registration/register.html', {'form': form})
+
 
 def loginUser(request):
     form = LoginForm(request.POST or None)

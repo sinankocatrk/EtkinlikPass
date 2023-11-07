@@ -1,6 +1,7 @@
 from django.shortcuts import render,HttpResponse,redirect
 from .forms import AdvertForm
-from .models import Event,Advert,User
+from .models import Event,Advert
+from user.models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django import forms 
@@ -33,9 +34,6 @@ def addadvert(request):
         new_advert.save()
         messages.success(request, "İlan başarıyla oluşturuldu")
         return render(request, "myadvert.html")
-
-
-    
         
     form = AdvertForm()
     context = {
@@ -45,4 +43,12 @@ def addadvert(request):
 
     return render(request, "addadvert.html", context)
 def myadvert(request):
-    return render(request,"myadvert.html")
+    if request.user.is_authenticated:
+        custom_user = CustomUser.objects.get(id=request.user.id)
+    form  = Advert.objects.filter(author=custom_user)
+
+    print(custom_user)
+    context = {
+        "form" : form 
+    }
+    return render(request,"myadvert.html",context)

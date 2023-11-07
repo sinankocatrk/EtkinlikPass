@@ -8,8 +8,44 @@
         <h2>Kontrol Paneli</h2> 
         <hr>
         <p>Hoşgeldiniz, <small>{{request.user.username}} </small></p>  <hr>
+        {% if form  %}
+        <table class="table">
+                <thead>
+                <tr>
+                    
+                    <th scope="col">Etkinlik</th>
+                    <th scope="col">Fiyat</th>
+                    <th scope="col">Tarih</th>
+                    <th scope="col">Yer</th>
+                    <th scope="col">Açıklama</th>
+                    <th scope="col">Güncelle</th>
+                    <th scope="col">Sil</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for advert in form  %}
+                <tr>
+                    <th scope="row">{{advert.event.title}}</th>
+                    <td><a href="">{{advert.price}}</a></td>
+                    <td>{{advert.event.start_time}}</td>
+                    <td>{{advert.event.city}}</td>
+                    <td>{{advert.seller_description}}</td>
+                    <td><a href="" class = "btn btn-danger">Güncelle</a></td>
+                    <td><a href="" class = "btn btn-danger">Sil</a> </td>
+
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        {% else %}
 
 
+        <div class = "alert alert-danger">
+            Henüz bir makaleniz bulunmuyor...
+
+        </div>
+        {% endif %}
 
             <br>
             <a href="/advert/addadvert">
