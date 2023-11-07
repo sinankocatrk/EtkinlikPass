@@ -23,6 +23,7 @@ from event import views
 from django.conf import settings
 from django.conf.urls.static import static
 from advert import views
+from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index,name= "index"),    
@@ -30,4 +31,5 @@ urlpatterns = [
     path('user/', include("user.urls")),
     path('event/', include("event.urls")), 
     path('advert/', include("advert.urls")),
+    path('api/', include("api.urls")),
 ]
