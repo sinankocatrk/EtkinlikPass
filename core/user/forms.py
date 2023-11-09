@@ -44,6 +44,5 @@ class LoginForm(forms.Form):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
 
-        # Kullanıcıyı doğrula ve döndür
         user = authenticate(username=username, password=password)
         return user
