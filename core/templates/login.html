@@ -1,16 +1,33 @@
 {% extends 'layout.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
 {% block body %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <h2>Giriş Yap</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <br>
-            <button type="submit" class="btn btn-danger">Giriş Yap</button>
-        </form>
+<div class="card login-form py-5">
+    <div class="body col-md-6 offset-md-3 px-5">
+        <div class="header d-flex flex-row justify-content-center">
+            <span><h2 class="mb-5">Giriş Yap</h2></span>
+        </div>
+        <div class="">
+            <form method="post">
+                
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex flex-row justify-content-between text-start my-3">
+                    <span class=""><a href="/user/register" class="mb-5">Şifremi unuttum</a></span>
+                    <span class="">Hesabın yok mu? <a href="/user/register">Kaydol</a></span>
+                </div>
+                <div class="d-flex flex-row justify-content-center align-items-center">
+                    <button type="submit" class="mt-2">Giriş Yap</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 {% endblock  %}

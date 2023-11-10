@@ -24,7 +24,6 @@ class CustomUserCreationForm(forms.Form):
         email = self.cleaned_data['email']
         password = self.cleaned_data['password']
 
-        # Kullanıcıyı oluştur
         user = CustomUser(username=username, email=email)
         user.set_password(password)
         user.save()
@@ -37,8 +36,8 @@ class CustomUserCreationForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length= 50,label="Kullanıcı adı: ")
-    password = forms.CharField(max_length=20,label="Parola",widget =forms.PasswordInput)
+    username = forms.CharField(max_length= 50,label="Kullanıcı adı ",widget=forms.TextInput(attrs={'class': "custom-field one"}))
+    password = forms.CharField(max_length=20,label="Parola ",widget =forms.PasswordInput)
 
     def save(self):
         username = self.cleaned_data['username']

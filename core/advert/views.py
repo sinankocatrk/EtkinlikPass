@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from .forms import AdvertForm
 from .models import Event,Advert
 from user.models import CustomUser
@@ -8,10 +8,7 @@ from django import forms
 from django.contrib.auth import login
 
 def index(request):
-    return render(request,"index.html")
-
-def about(request):
-    return render(request,"about.html")
+    return redirect("/")
 
 def addadvert(request):
     if request.method == 'POST':
@@ -51,3 +48,13 @@ def myadvert(request):
         "form" : form 
     }
     return render(request,"myadvert.html",context)
+
+
+def advertdetail(request,id):
+    advert = get_object_or_404(Advert,id=id)
+
+    context = {
+        "advert" : advert
+    }
+    
+    return render(request,"advertdetail.html",context)

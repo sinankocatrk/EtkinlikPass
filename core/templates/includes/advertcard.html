@@ -1,0 +1,66 @@
+<div class="col-md-3">
+    <div class="product-single-card">
+      <div class="product-top-area">
+        
+        {% comment %} 
+        <div class="product-discount">
+        
+        </div>
+        {% endcomment %}
+
+        <div class="product-img">
+          <div class="first-view">
+            <img src="{{advert.event.image_url}}" alt="logo" class="img-fluid" onerror="this.src='https://i.ibb.co/qpB9ZCZ/placeholder.png'">
+          </div>
+        </div>
+        <div class="sideicons">
+
+          <button class="sideicons-btn">
+            <i class="fa-solid fa-message"></i>
+          </button>
+
+          <button class="sideicons-btn" onclick="location.href='/advert/advertdetail/{{advert.id}}';">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+
+          <button class="sideicons-btn">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+          
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="d-flex justify-content-between">
+            <h6 class="product-category"><span>{{advert.event.city}}</span></h6>
+            <h6 class="product-category"><span>{{advert.event.start_time}}</span></h6>
+        </div>
+        
+        <h6 class="product-title text-truncate"><a href="/advert/advertdetail/{{advert.id}}">{{advert.event.title}}</a></h6>
+        <div class="d-flex align-items-center">
+          <div class="review-star me-1">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-regular fa-star-half-stroke"></i>
+            <i class="fa-regular fa-star"></i>
+          </div>
+
+          <span class="review-count">(13)</span>
+
+          <div class="d-flex align-items-center ml-auto">
+            <a href="#" class="mx-1" >{{advert.author.username}}</a>
+            <img class="rounded-circle mx-1" src="https://mdbootstrap.com/img/new/avatars/2.jpg" height="25" alt="">
+          </div>
+        </div>
+        <div class="d-flex flex-wrap align-items-center py-2">
+          {% comment %} <div class="old-price">
+            
+          </div> {% endcomment %}
+          <div class="new-price text-success">
+            {{advert.price}} TL
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
