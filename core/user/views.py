@@ -39,7 +39,7 @@ def loginUser(request):
     form = LoginForm(request.POST or None)
     context = {
             "form" : form
-        }
+    }
 
     if form.is_valid():
         username = form.cleaned_data.get("username")

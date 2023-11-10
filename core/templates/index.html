@@ -1,17 +1,46 @@
 {% extends 'layout.html' %}
 
-
 {% block body %}
-<div style= "margin-top : 100px;" class="jumbotron text-center">
-<br><br>
-    <p>Ana Sayfa</p> </div>
-<br><br>  
-    <p>Ana Sayfa</p>
-</div>
-
+<div class="container">
+    <div class="px-4">
 {% if request.user.is_authenticated %}
-    Giriş Yapılmış {{request.user.username}}
+    <h2>Hoş geldin, {{request.user.username}}</h2>
 {% else %}
     Giriş yapılmamış 
 {% endif %}
+    </div>
+</div>
+
+<section>
+    <div class="container">
+      <div class="row g-4 py-5">
+
+        {% if not all_adverts %}
+
+        <div class="col-md-12">
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Uyarı!</h4>
+            <p>Henüz hiçbir ilan yayınlanmamış.</p>
+            <hr>
+            {% if request.user.is_authenticated %}
+            <p class="mb-0">İlan yayınlamak için <a href="/advert/addadvert">buraya</a> tıklayın.</p>
+            {% else %}
+            <p class="mb-0">İlan yayınlamak için <a href="/user/login">buraya</a> tıklayın.</p>
+            {% endif %}
+            
+        </div>
+
+        {% else %}
+
+        {% for advert in all_adverts %}
+
+            {% include "includes/advertcard.html" %}
+        
+        {% endfor %}
+
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
 {% endblock  %}

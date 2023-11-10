@@ -1,0 +1,47 @@
+.card {
+    background: #fff;
+    transition: .5s;
+    border: 0;
+    margin-bottom: 30px;
+    border-radius: .55rem;
+    position: relative;
+    width: 100%;
+    box-shadow: 1px 16px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+  .card .body {
+    color: #444;
+    padding: 20px;
+    font-weight: 400;
+  }
+  
+  .card .header {
+    color: black;
+    position: relative;
+    box-shadow: none;
+  }
+  
+  .login-form {
+    -webkit-transition: all .4s ease;
+    transition: all .4s ease;
+  }
+
+  .card button {
+    background-color: white;
+    color: black;
+    border-radius: 10%;
+    border : 2px solid black;
+    padding: 15px 20px;
+    -webkit-box-shadow: 1px 1px 28.5px -7px #dddddd;
+    -moz-box-shadow: 1px 1px 28.5px -7px #dddddd;
+    box-shadow: 1px 1px 28.5px -7px #dddddd;
+  }
+
+  .card button:hover {
+    background-color: black;
+    color: white;
+  }
+
+  .card a{
+    color: black;
+    font-weight: bold;
+  }

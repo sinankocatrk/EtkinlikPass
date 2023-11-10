@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from .forms import AdvertForm
 from .models import Event,Advert
 from user.models import CustomUser
@@ -9,10 +9,7 @@ from django.contrib.auth import login
 
 # Create your views here.
 def index(request):
-    return render(request,"index.html")
-
-def about(request):
-    return render(request,"about.html")
+    return redirect("/")
 
 def addadvert(request):
     if request.method == 'POST':
@@ -33,7 +30,7 @@ def addadvert(request):
 
         new_advert.save()
         messages.success(request, "İlan başarıyla oluşturuldu")
-        return render(request, "myadvert.html")
+        return redirect("/advert/myadvert")
         
     form = AdvertForm()
     context = {
@@ -42,6 +39,7 @@ def addadvert(request):
     }
 
     return render(request, "addadvert.html", context)
+
 def myadvert(request):
     if request.user.is_authenticated:
         custom_user = CustomUser.objects.get(id=request.user.id)
@@ -52,3 +50,13 @@ def myadvert(request):
         "form" : form 
     }
     return render(request,"myadvert.html",context)
+
+
+def advertdetail(request,id):
+    advert = get_object_or_404(Advert,id=id)
+
+    context = {
+        "advert" : advert
+    }
+    
+    return render(request,"advertdetail.html",context)

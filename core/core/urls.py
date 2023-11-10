@@ -17,17 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from advert import views
-from advert.views import about
 from user import views
 from event import views
 from django.conf import settings
 from django.conf.urls.static import static
 from advert import views
 from api import views
+from .views import index
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index,name= "index"),    
-    path('about/', about, name='about'),    
+    path('', index,name= "index"),
     path('user/', include("user.urls")),
     path('event/', include("event.urls")), 
     path('advert/', include("advert.urls")),
