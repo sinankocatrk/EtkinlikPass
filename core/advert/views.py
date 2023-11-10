@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django import forms 
 from django.contrib.auth import login
 
-# Create your views here.
 def index(request):
     return redirect("/")
 
@@ -37,7 +36,6 @@ def addadvert(request):
         "form": form,
         "etkinlikler": Event.objects.all()
     }
-
     return render(request, "addadvert.html", context)
 
 def myadvert(request):

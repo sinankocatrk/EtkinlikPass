@@ -27,7 +27,7 @@ def register(request):
                 user = form.save()
                 login(request, user)
                 messages.success(request, "Başarıyla kayıt oldunuz.")
-                return render(request, 'index.html')
+                return redirect("/")
 
     else:
         form = CustomUserCreationForm()

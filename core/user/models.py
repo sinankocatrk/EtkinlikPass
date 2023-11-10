@@ -12,8 +12,6 @@ class CustomUser(AbstractUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
-    # Kullanıcıların ilişkisi, başka bir modelde tanımlansın
-
 
 class UserRelation(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
