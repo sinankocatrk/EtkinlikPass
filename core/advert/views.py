@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django import forms 
 from django.contrib.auth import login
 
-# Create your views here.
 def index(request):
     return render(request,"index.html")
 
@@ -33,15 +32,15 @@ def addadvert(request):
 
         new_advert.save()
         messages.success(request, "İlan başarıyla oluşturuldu")
-        return render(request, "myadvert.html")
+        return redirect("/advert/myadvert")
         
     form = AdvertForm()
     context = {
         "form": form,
         "etkinlikler": Event.objects.all()
     }
-
     return render(request, "addadvert.html", context)
+
 def myadvert(request):
     if request.user.is_authenticated:
         custom_user = CustomUser.objects.get(id=request.user.id)
