@@ -23,9 +23,9 @@
             <p>Henüz hiçbir ilan yayınlanmamış.</p>
             <hr>
             {% if request.user.is_authenticated %}
-            <p class="mb-0">İlan yayınlamak için <a href="/advert/addadvert">buraya</a> tıklayın.</p>
+            <p class="mb-0">İlan yayınlamak için <a href="{% url 'advert:addadvert' %}">buraya</a> tıklayın.</p>
             {% else %}
-            <p class="mb-0">İlan yayınlamak için <a href="/user/login">buraya</a> tıklayın.</p>
+            <p class="mb-0">İlan yayınlamak için <a href="{% url 'user:login' %}">buraya</a> tıklayın.</p>
             {% endif %}
             
         </div>

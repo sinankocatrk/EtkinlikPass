@@ -37,17 +37,18 @@ def addadvert(request):
         "etkinlikler": Event.objects.all()
     }
     return render(request, "addadvert.html", context)
-
+@login_required(login_url="user:login")
 def myadvert(request):
     if request.user.is_authenticated:
         custom_user = CustomUser.objects.get(id=request.user.id)
     form  = Advert.objects.filter(author=custom_user)
 
-    print(custom_user)
     context = {
         "form" : form 
     }
     return render(request,"myadvert.html",context)
+
+
 
 
 def advertdetail(request,id):
@@ -59,6 +60,7 @@ def advertdetail(request,id):
     
     return render(request,"advertdetail.html",context)
 
+@login_required(login_url="user:login")
 def update(request, id):
 
     if not request.user.is_authenticated:
@@ -66,23 +68,29 @@ def update(request, id):
         return redirect("login")  
 
     advert = get_object_or_404(Advert, id=id)
-
+    
     if advert.author != request.user:
         messages.error(request, "Bu ilana güncelleme yetkiniz yok.")
         return redirect("index") 
-
-    form = AdvertForm(request.POST or None, request.FILES or None, instance=advert)
     
-    if form.is_valid():
-        advert = form.save(commit=False)
-        advert.save()
-        messages.success(request, "İlan başarıyla güncellendi")
-        return redirect("myadvert")
+    
+    if request.method == 'POST':
+        
+        form = AdvertForm(request.POST, instance=advert)
+
+        if form.is_valid():
+            advert = form.save()
+            messages.success(request, "İlan başarıyla güncellendi")
+            return render(request, "advertdetail.html", {"advert": advert})
+    else:
+        form = AdvertForm(instance=advert)
     
     context = {"form": form,
-               "title": advert.event.title}
+               "title": advert.event.title,
+               "id": advert.id}
     return render(request, "update.html", context)
 
+@login_required(login_url="user:login")
 def delete(request, id):
 
     if not request.user.is_authenticated:
@@ -98,4 +106,4 @@ def delete(request, id):
 
     advert.delete()
     messages.success(request, "İlan başarıyla silindi")
-    return redirect("myadvert")
+    return redirect("advert:myadvert")

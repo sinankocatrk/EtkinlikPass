@@ -7,13 +7,12 @@
     <div class="col-md-6 offset-md-3">
         <h3>Ilan Güncelle</h3>
         <hr>
-        <form method = "post" enctype="multipart/form-data">
+            <form method = "post" enctype="multipart/form-data" action="{% url 'advert:update' id %}">
             {% csrf_token %}
             {{title}}
             <br>
-            {{form.seller_description}}
-            <br>
-            {{form.price}}            
+            {{form}}
+            <br> 
             <br>
             <button type = "submit" class = "btn btn-danger">Nick Güncelle</button>
         </form>
