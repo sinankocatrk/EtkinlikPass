@@ -79,7 +79,6 @@ def update(request, id):
         form = AdvertForm(request.POST, instance=advert)
 
         if form.is_valid():
-            print('post')
             advert = form.save()
             messages.success(request, "İlan başarıyla güncellendi")
             return render(request, "advertdetail.html", {"advert": advert})
