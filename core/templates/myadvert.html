@@ -30,8 +30,8 @@
                     <td>{{advert.event.start_time}}</td>
                     <td>{{advert.event.city}}</td>
                     <td>{{advert.seller_description}}</td>
-                    <td><a href="" class = "btn btn-danger">Güncelle</a></td>
-                    <td><a href="" class = "btn btn-danger">Sil</a> </td>
+                    <td><a href="/advert/update/{{advert.id}}" class = "btn btn-danger">Güncelle</a></td>
+                    <td><a href="/advert/delete/{{advert.id}}" class = "btn btn-danger">Sil</a> </td>
 
                 </tr>
                 {% endfor %}

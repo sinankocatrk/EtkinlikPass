@@ -58,3 +58,44 @@ def advertdetail(request,id):
     }
     
     return render(request,"advertdetail.html",context)
+
+def update(request, id):
+
+    if not request.user.is_authenticated:
+        messages.error(request, "İlan güncellemek için giriş yapmalısınız.")
+        return redirect("login")  
+
+    advert = get_object_or_404(Advert, id=id)
+
+    if advert.author != request.user:
+        messages.error(request, "Bu ilana güncelleme yetkiniz yok.")
+        return redirect("index") 
+
+    form = AdvertForm(request.POST or None, request.FILES or None, instance=advert)
+    
+    if form.is_valid():
+        advert = form.save(commit=False)
+        advert.save()
+        messages.success(request, "İlan başarıyla güncellendi")
+        return redirect("myadvert")
+    
+    context = {"form": form,
+               "title": advert.event.title}
+    return render(request, "update.html", context)
+
+def delete(request, id):
+
+    if not request.user.is_authenticated:
+        messages.error(request, "İlan silmek için giriş yapmalısınız.")
+        return redirect("login")  
+
+    advert = get_object_or_404(Advert, id=id)
+
+
+    if advert.author != request.user:
+        messages.error(request, "Bu ilanı silme yetkiniz yok.")
+        return redirect("index") 
+
+    advert.delete()
+    messages.success(request, "İlan başarıyla silindi")
+    return redirect("myadvert")
