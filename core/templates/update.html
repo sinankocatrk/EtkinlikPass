@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h3>Ilan Güncelle</h3>
+        <hr>
+        <form method = "post" enctype="multipart/form-data" action="{% url 'advert:update' id %}">
+            {% csrf_token %}
+            {{title}}
+            <br>
+            {{form}}
+            <br>           
+            <br>
+            <button type = "submit" class = "btn btn-danger">Nick Güncelle</button>
+        </form>
+    </div>
+  </div>
+
+
+{% endblock body %}
