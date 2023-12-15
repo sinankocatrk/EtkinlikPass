@@ -1,3 +1,5 @@
 pip install Django
 pip install djangorestframework
 pip install django-crispy-forms
+redis
+uvicorn

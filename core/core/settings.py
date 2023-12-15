@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     'event',
     'api',
-
+    'channels',
 
 ]
 
@@ -138,3 +138,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'user.CustomUser'
+
+# Channels
+ASGI_APPLICATION = 'core.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
