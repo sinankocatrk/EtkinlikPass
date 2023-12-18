@@ -30,12 +30,6 @@ class Consumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
-        # Inbox'ı bulun veya oluşturun
-        inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
-
-        # Mesajı veritabanına kaydedin
-        await self.save_message(inbox, message)
-
         # Grubun tamamına mesaj gönder
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -48,6 +42,12 @@ class Consumer(AsyncWebsocketConsumer):
     # Grup mesajı işleyici
     async def chat_message(self, event):
         message = event['message']
+
+        # Inbox'ı bulun veya oluşturun
+        inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
+
+        # Mesajı veritabanına kaydedin
+        await self.save_message(inbox, message)
 
         # WebSocket'e mesaj gönder
         await self.send(text_data=json.dumps({
@@ -62,8 +62,11 @@ class Consumer(AsyncWebsocketConsumer):
 
         advert = Advert.objects.get(id=advert_id)
         user = CustomUser.objects.get(id=user_id)
-        inbox, created = Inbox.objects.get_or_create(advert=advert, sender=user, receiver=advert.author)
+        # receiver'ı advert'in sahibi olarak belirleyin
+        receiver = advert.author
+        inbox, created = Inbox.objects.get_or_create(advert=advert, sender=user, receiver=receiver)
         return inbox
+
 
     @database_sync_to_async
     def save_message(self, inbox, message_text):

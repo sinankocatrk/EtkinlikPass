@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Inbox</h1>
+
+  <!-- Gönderici olarak olan Inbox'ları listele -->
+  <h2>Gönderici Olarak:</h2>
+  <ul>
+    {% for inbox in sender_inboxes %}
+    <li>
+        <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}">
+        {{ inbox.sender.username }} - {{ inbox.advert.event.title }}
+        </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Alıcı olarak olan Inbox'ları listele -->
+  <h2>Alıcı Olarak:</h2>
+  <ul>
+    {% for inbox in receiver_inboxes %}
+    <li>
+        <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}">
+        {{ inbox.sender.username }} - {{ inbox.advert.event.title }}
+        </a>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

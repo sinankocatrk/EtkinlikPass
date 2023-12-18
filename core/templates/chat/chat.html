@@ -9,9 +9,27 @@
 {% block body %}
 
 <script type="text/javascript">
-    var advertId = "{{ advert_id }}";  // Django template'den gelen advert_id
-    var userId = "{{ user_id }}";      // Django template'den gelen user_id
+    var advertId = "{{ advert_id }}";
+    var userId = "{{ user_id }}";
+
+    function loadMessages() {
+        // Mevcut Inbox'ın eski mesajları
+        var oldMessagesJson = '{{ old_messages_json|escapejs }}';
+        console.log(oldMessagesJson);
+        var oldMessages = JSON.parse(oldMessagesJson);
+        console.log(oldMessages);
+        
+        var chatLog = document.getElementById('chat-log');
+        chatLog.value = ""; // Mevcut içeriği temizle
+        oldMessages.forEach(function(message) {
+            chatLog.value += `${message.sender__username}: ${message.content}\n`;
+        });
+    }
+    
+    // Sayfa yüklendiğinde mesajları yükle
+    window.onload = loadMessages;
 </script>
+
 
 <div class="container">
     <div class="row">
@@ -26,5 +44,6 @@
     </div>
 
 <script src="{% static 'js/chat/ChatSocket.js' %}"></script>
+
 
 {% endblock  %}
