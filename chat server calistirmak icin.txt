@@ -1,0 +1,2 @@
+uvicorn core.asgi:application --port 8001
+redis'i çalıştır

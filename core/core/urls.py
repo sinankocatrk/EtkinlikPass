@@ -10,6 +10,8 @@ from advert import views
 from api import views
 from .views import index
 
+app_name = 'core'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index,name= "index"),

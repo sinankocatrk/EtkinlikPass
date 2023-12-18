@@ -37,6 +37,7 @@ def addadvert(request):
         "etkinlikler": Event.objects.all()
     }
     return render(request, "addadvert.html", context)
+
 @login_required(login_url="user:login")
 def myadvert(request):
     if request.user.is_authenticated:
@@ -53,10 +54,16 @@ def myadvert(request):
 
 def advertdetail(request,id):
     advert = get_object_or_404(Advert,id=id)
-
+    current_user = None
+    if request.user.is_authenticated:
+        current_user = CustomUser.objects.get(id=request.user.id)
+    
     context = {
-        "advert" : advert
+        "advert" : advert,
+        "user" : current_user
     }
+
+    
     
     return render(request,"advertdetail.html",context)
 

@@ -1,17 +1,30 @@
+{% extends 'layout.html' %}
 {% load static %}
-<html>
-<head>
-    <title>Chat</title>
-    <script src="{% static 'js/chat/ChatSocket.js' %}"></script>
-</head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
 
-    <script>     
-    </script>
-    
+{% block head %}
 
-</body>
-</html>
+{% endblock head %}
+
+
+{% block body %}
+
+<script type="text/javascript">
+    var advertId = "{{ advert_id }}";  // Django template'den gelen advert_id
+    var userId = "{{ user_id }}";      // Django template'den gelen user_id
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Chat</h1>
+            <p>advertid {{advert_id}}</p>
+            <p>userid {{user_id}}</p>
+            <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
+            <input id="chat-message-input" type="text" size="100"><br>
+            <input id="chat-message-submit" type="button" value="Send">
+        </div>
+    </div>
+
+<script src="{% static 'js/chat/ChatSocket.js' %}"></script>
+
+{% endblock  %}

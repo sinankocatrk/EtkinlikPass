@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'event',
     'api',
     'channels',
-
+    'chat',
 ]
 
 MIDDLEWARE = [

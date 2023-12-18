@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var chatSocket = new WebSocket("ws://127.0.0.1:8001/ws/path/");
+    var chatSocket = new WebSocket('ws://127.0.0.1:8001/ws/chat/' + advertId + '/' + userId + '/');
 
     document.querySelector('#chat-message-submit').onclick = function(e) {
         var messageInputDom = document.querySelector('#chat-message-input');
