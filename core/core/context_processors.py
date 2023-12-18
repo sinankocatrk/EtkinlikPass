@@ -19,5 +19,4 @@ def unread_message_count(request):
         for message in all_messages:
             if message.sender is not user and message.is_read is False:
                 total_unread_count += 1
-                print(total_unread_count)
     return {'unread_message_count': total_unread_count}
