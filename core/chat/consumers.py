@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+import django
 from channels.db import database_sync_to_async
 
 class Consumer(AsyncWebsocketConsumer):
@@ -30,29 +31,43 @@ class Consumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
+        inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
+        db_message = await self.save_message(inbox, message)
+
         # Grubun tamamına mesaj gönder
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'sender_id': db_message.sender.id,
+                'current_user_id': self.scope['user'].id,
+                'username': db_message.sender.username,
+                'message': message,
+                'profilePicUrl': 'https://mdbootstrap.com/img/new/avatars/2.jpg',
+                'time': db_message.created_at.strftime("%H:%M"),
             }
         )
 
     # Grup mesajı işleyici
     async def chat_message(self, event):
+        # Event'ten bilgileri al
+        sender_id = event['sender_id']
+        current_user_id = event['current_user_id']
+        username = event['username']
         message = event['message']
-
-        # Inbox'ı bulun veya oluşturun
-        inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
-
-        # Mesajı veritabanına kaydedin
-        await self.save_message(inbox, message)
+        profilePicUrl = event['profilePicUrl']
+        time = event['time']
 
         # WebSocket'e mesaj gönder
         await self.send(text_data=json.dumps({
-            'message': message
+            'sender_id': sender_id,
+            'current_user_id': current_user_id,
+            'username': username,
+            'message': message,
+            'profilePicUrl': profilePicUrl,
+            'time': time,
         }))
+
 
     @database_sync_to_async
     def get_or_create_inbox(self, advert_id, user_id):

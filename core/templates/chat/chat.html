@@ -11,19 +11,67 @@
 <script type="text/javascript">
     var advertId = "{{ advert_id }}";
     var userId = "{{ user_id }}";
+    var currentUserId = "{{ current_user.id }}";
 
     function loadMessages() {
-        // Mevcut Inbox'ın eski mesajları
         var oldMessagesJson = '{{ old_messages_json|escapejs }}';
-        console.log(oldMessagesJson);
         var oldMessages = JSON.parse(oldMessagesJson);
-        console.log(oldMessages);
         
         var chatLog = document.getElementById('chat-log');
-        chatLog.value = ""; // Mevcut içeriği temizle
+        chatLog.innerHTML = ""; // Mevcut içeriği temizle
         oldMessages.forEach(function(message) {
-            chatLog.value += `${message.sender__username}: ${message.content}\n`;
+            var messageComponent = createMessageComponent(
+                chatLog,
+                message.sender__id,
+                message.sender__username, 
+                message.content, 
+                'https://mdbootstrap.com/img/new/avatars/2.jpg', // Profil resmi URL'si
+                message.formatted_date
+            );
         });
+    }
+    
+
+    function createMessageComponent(chatLog, sender_id, username, message, profilePicUrl, time) {
+        var current_user_id = currentUserId
+        var messageDiv = document.createElement('div');
+        messageDiv.className = 'mx-1 my-1 chat-message ' + (sender_id==current_user_id ? 'bg-primary' : 'bg-secondary') + ' rounded';
+      
+        var imgDiv = document.createElement('div');
+        imgDiv.className = 'd-flex align-items-center';
+      
+        var profileImg = document.createElement('img');
+        profileImg.src = profilePicUrl;
+        profileImg.alt = username;
+        profileImg.className = 'rounded-circle';
+        profileImg.style = 'width: 40px; height: 40px; margin-right: 10px;';
+      
+        var usernameStrong = document.createElement('strong');
+        usernameStrong.textContent = username;
+        usernameStrong.className = 'mr-auto';
+      
+        var timeSmall = document.createElement('small');
+        timeSmall.textContent = time;
+      
+        var messageP = document.createElement('p');
+        messageP.className = 'mb-2';
+        messageP.style = 'margin-left: 50px;';
+        messageP.textContent = message;
+      
+        imgDiv.appendChild(profileImg);
+        imgDiv.appendChild(usernameStrong);
+        imgDiv.appendChild(timeSmall);
+      
+        messageDiv.appendChild(imgDiv);
+        messageDiv.appendChild(messageP);
+      
+        chatLog.appendChild(messageDiv);
+        scrollToBottom();
+      }      
+
+      function scrollToBottom() {
+        var chatLog = document.getElementById("chat-log");
+        chatLog.scrollTop = chatLog.scrollHeight;
     }
     
     // Sayfa yüklendiğinde mesajları yükle
@@ -31,17 +79,23 @@
 </script>
 
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h1>Chat</h1>
-            <p>advertid {{advert_id}}</p>
-            <p>userid {{user_id}}</p>
-            <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
-            <input id="chat-message-input" type="text" size="100"><br>
-            <input id="chat-message-submit" type="button" value="Send">
+<div class="container-fluid d-flex justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div>
+            <h1>Chat - {{ current_user.username }}</h1>
+            <div id="chat-log" class="border" style="overflow-y: scroll; height: 400px;">
+
+                        
+            </div>
+            <br>
+            <div class="d-flex">
+                <input id="chat-message-input" type="text" class="flex-grow-1 form-control" placeholder="Mesajınızı yazın">
+                <button id="chat-message-submit" class="btn btn-primary ml-2">Gönder</button>
+            </div>
         </div>
     </div>
+</div>
+
 
 <script src="{% static 'js/chat/ChatSocket.js' %}"></script>
 

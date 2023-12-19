@@ -12,9 +12,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var chatLog = document.querySelector('#chat-log');
-        chatLog.value += (data.message + '\n');
+
+        console.log("data");
+
+        var messageComponent = createMessageComponent(
+            document.getElementById('chat-log'),
+            data.sender_id,
+            data.username,
+            data.message,
+            data.profilePicUrl,
+            data.time
+        );
     };
+    
 
     chatSocket.onclose = function(e) {
         console.error('Chat socket closed unexpectedly');

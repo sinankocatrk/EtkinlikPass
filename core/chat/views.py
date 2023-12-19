@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core import serializers
 import json
+from django.db.models.functions import Cast
+from django.db.models import CharField
 
 from advert.models import Advert
 from user.models import CustomUser
@@ -20,16 +22,20 @@ def chat_room(request, advert_id, user_id):
             message.save()
 
     # Kullanıcının ait olduğu Inbox'ın eski mesajlarını al
-    old_messages = Message.objects.filter(inbox=inbox).values('sender__username', 'content')
+    old_messages = Message.objects.filter(inbox=inbox).annotate(
+        formatted_date=Cast('created_at', CharField())
+    ).values('sender__id', 'sender__username', 'content', 'formatted_date')
+
     old_messages_json = json.dumps(list(old_messages))
 
-    print(old_messages)
+    current_user = CustomUser.objects.get(id=request.user.id)
 
     context = {
         'inbox': inbox,
         'advert_id': advert_id,
         'user_id': user_id,
         'old_messages_json': old_messages_json,
+        'current_user': current_user,
     }
 
     return render(request, 'chat/chat.html', context)
