@@ -17,6 +17,6 @@ def unread_message_count(request):
     for inbox in all_inboxes:
         all_messages = Message.objects.filter(inbox=inbox)
         for message in all_messages:
-            if message.sender is not user and message.is_read is False:
+            if message.sender != user and message.is_read is False:
                 total_unread_count += 1
     return {'unread_message_count': total_unread_count}

@@ -1,6 +1,8 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import django
+from django.utils import timezone
+from django.template.defaultfilters import date as _date
 from channels.db import database_sync_to_async
 
 class Consumer(AsyncWebsocketConsumer):
@@ -44,7 +46,7 @@ class Consumer(AsyncWebsocketConsumer):
                 'username': db_message.sender.username,
                 'message': message,
                 'profilePicUrl': 'https://mdbootstrap.com/img/new/avatars/2.jpg',
-                'time': db_message.created_at.strftime("%H:%M"),
+                'time': _date(timezone.localtime(db_message.created_at), "SHORT_DATETIME_FORMAT")
             }
         )
 
@@ -77,7 +79,6 @@ class Consumer(AsyncWebsocketConsumer):
 
         advert = Advert.objects.get(id=advert_id)
         user = CustomUser.objects.get(id=user_id)
-        # receiver'ı advert'in sahibi olarak belirleyin
         receiver = advert.author
         inbox, created = Inbox.objects.get_or_create(advert=advert, sender=user, receiver=receiver)
         return inbox
@@ -89,4 +90,11 @@ class Consumer(AsyncWebsocketConsumer):
         from user.models import CustomUser
 
         user = CustomUser.objects.get(id=self.scope['user'].id)
-        return Message.objects.create(inbox=inbox, content=message_text, sender=user)
+        message = Message.objects.create(inbox=inbox, sender=user, content=message_text, created_at=django.utils.timezone.now())
+
+        inbox.last_message = message
+        inbox.updated_at = django.utils.timezone.now()
+        print(inbox.updated_at)
+        inbox.save()
+
+        return message

@@ -26,48 +26,65 @@
                 message.sender__username, 
                 message.content, 
                 'https://mdbootstrap.com/img/new/avatars/2.jpg', // Profil resmi URL'si
-                message.formatted_date
+                message.created_at
             );
         });
     }
     
 
     function createMessageComponent(chatLog, sender_id, username, message, profilePicUrl, time) {
-        var current_user_id = currentUserId
+        currentUserId = parseInt(currentUserId);
         var messageDiv = document.createElement('div');
-        messageDiv.className = 'mx-1 my-1 chat-message ' + (sender_id==current_user_id ? 'bg-primary' : 'bg-secondary') + ' rounded';
-      
-        var imgDiv = document.createElement('div');
-        imgDiv.className = 'd-flex align-items-center';
-      
-        var profileImg = document.createElement('img');
-        profileImg.src = profilePicUrl;
-        profileImg.alt = username;
-        profileImg.className = 'rounded-circle';
-        profileImg.style = 'width: 40px; height: 40px; margin-right: 10px;';
-      
-        var usernameStrong = document.createElement('strong');
-        usernameStrong.textContent = username;
-        usernameStrong.className = 'mr-auto';
-      
-        var timeSmall = document.createElement('small');
-        timeSmall.textContent = time;
-      
-        var messageP = document.createElement('p');
-        messageP.className = 'mb-2';
-        messageP.style = 'margin-left: 50px;';
-        messageP.textContent = message;
-      
-        imgDiv.appendChild(profileImg);
-        imgDiv.appendChild(usernameStrong);
-        imgDiv.appendChild(timeSmall);
-      
-        messageDiv.appendChild(imgDiv);
-        messageDiv.appendChild(messageP);
-      
+        messageDiv.className = `media w-50 mb-3 ${sender_id === currentUserId ? 'ml-auto' : ''}`;
+        messageDiv.style = 'align-items: center; display: flex;';  // Dikey merkezleme için
+    
+        var img = document.createElement('img');
+        img.src = profilePicUrl;
+        img.alt = 'user';
+        img.width = 50;
+        img.className = 'rounded-circle';
+        img.style = 'margin-right: 10px;';
+    
+        var mediaBody = document.createElement('div');
+        mediaBody.className = 'media-body';
+        mediaBody.style = 'display: flex; flex-direction: column; justify-content: center;';  // İçeriği dikey olarak merkezle
+    
+        var usernameP = document.createElement('p');
+        usernameP.className = 'small text-muted';
+        usernameP.textContent = '@' + username;
+        usernameP.style = 'margin-bottom: 5px;';  // Kullanıcı adı ile mesaj arasındaki boşluğu azalt
+    
+        var msgBox = document.createElement('div');
+        msgBox.className = `rounded py-2 px-3 mb-2 ${sender_id === currentUserId ? 'bg-primary' : 'bg-light'}`;
+        msgBox.style = 'margin-top: 0;';  // Mesajın üst marjinini sıfırla
+    
+        var msgText = document.createElement('p');
+        msgText.className = `text-small mb-0 ${sender_id === currentUserId ? 'text-white' : 'text-muted'}`;
+        msgText.textContent = message;
+    
+        var timeP = document.createElement('p');
+        timeP.className = 'small text-muted';
+        timeP.textContent = time;
+    
+
+        if (sender_id !== currentUserId) {
+            mediaBody.appendChild(usernameP);
+        }
+
+        mediaBody.appendChild(msgBox);
+        msgBox.appendChild(msgText);
+        mediaBody.appendChild(timeP);
+    
+        if (sender_id !== currentUserId) {
+            messageDiv.appendChild(img);
+        }
+        messageDiv.appendChild(mediaBody);
+    
         chatLog.appendChild(messageDiv);
         scrollToBottom();
-      }      
+    }
+        
+          
 
       function scrollToBottom() {
         var chatLog = document.getElementById("chat-log");
@@ -80,13 +97,13 @@
 
 
 <div class="container-fluid d-flex justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
+    <div class="w-75 col-md-12">
         <div>
-            <h1>Chat - {{ current_user.username }}</h1>
-            <div id="chat-log" class="border" style="overflow-y: scroll; height: 400px;">
+            <div id="chat-log" class="border w-100" style="overflow-y: scroll; height: 450px;">
 
                         
             </div>
+
             <br>
             <div class="d-flex">
                 <input id="chat-message-input" type="text" class="flex-grow-1 form-control" placeholder="Mesajınızı yazın">

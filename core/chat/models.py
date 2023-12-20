@@ -7,6 +7,9 @@ class Inbox(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sender', on_delete=models.CASCADE)
     receiver = models.ForeignKey(CustomUser, related_name='receiver', on_delete=models.CASCADE)
     advert = models.ForeignKey(Advert, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    last_message = models.ForeignKey('Message', related_name='last_message', on_delete=models.CASCADE, null=True)
 
 class Message(models.Model):
     inbox = models.ForeignKey(Inbox, related_name='message', on_delete=models.CASCADE)
