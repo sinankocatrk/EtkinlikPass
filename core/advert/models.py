@@ -10,6 +10,6 @@ class Advert(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.author.username
+        return (self.author.username + " - " + self.event.title)
     class Meta:
        ordering = ['-created_at']

@@ -32,15 +32,10 @@
     {% if request.user.is_authenticated %}
      <div class="d-flex align-items-center">
       <div class="dropdown">
-        <a id="navbarDropdownMenuLink1" class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+        <a iclass="text-reset me-3 hidden-arrow" href="{% url 'chat:inbox' %}" role="button" data-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
           <i class="fas fa-bell"></i>
-          <span class="badge rounded-pill badge-notification bg-danger">2</span>
+          <span class="badge rounded-pill badge-notification bg-danger">{{ unread_message_count }}</span>
         </a>
-        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink1">
-          <li><a class="dropdown-item" href="#">My profile</a></li>
-          <li><a class="dropdown-item" href="#">My Adverts</a></li>
-          <li><a class="dropdown-item" href="#">Logout</a></li>
-        </ul>
       </div>
       <div class="dropdown">
         <a id="navbarDropdownMenuLink2" class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">

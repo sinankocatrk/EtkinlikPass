@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <div class="container w-75 messages-box my-4">
+    <div class="list-group rounded-0">
+      <h5>Gönderdiğim Mesajlar:</h5>
+  
+      {% if not sender_inboxes %}
+      
+      <a href="#" class="list-group-item list-group-item-action rounded-0" >
+        <div class="media">
+          <div class="media-body ml-4 my-2">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <h6 class="mb-0">Gönderdiğiniz herhangi bir mesaj bulunmuyor.</h6>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      {% else %}
+
+        {% for inbox in sender_inboxes %}
+
+          <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}" class="list-group-item list-group-item-action rounded-0" 
+              {% if inbox.last_message.is_read == False and inbox.last_message.sender != current_user %}style="border-left: 5px solid blue;"{% endif %}>
+
+            <div class="media">
+              <img src="https://mdbootstrap.com/img/new/avatars/2.jpg" alt="user" width="50" class="rounded-circle">
+              <div class="media-body ml-4">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <h6 class="mb-0">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
+                  <small class="small font-weight-bold">{{ inbox.updated_at|date:"d M" }}</small>
+                </div>
+                <p class="font-italic text-small mb-0">{{ inbox.last_message.content }}</p>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+
+      {% endif %}
+  
+    </div>
+  </div>
+  
+
+  <div class="container w-75 messages-box my-4">
+    <div class="list-group rounded-0">
+      <h5>İlanlarıma Gelen Mesajlar:</h5>
+  
+      {% if not receiver_inboxes %}
+      
+      <a href="#" class="list-group-item list-group-item-action rounded-0" >
+        <div class="media">
+          <div class="media-body ml-4 my-2">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <h6 class="mb-0">İlanlarınıza gelen herhangi bir mesaj bulunmuyor.</h6>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      {% else %}
+
+        {% for inbox in receiver_inboxes %}
+
+          <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}" class="list-group-item list-group-item-action rounded-0" 
+          {% if inbox.last_message.is_read == False and inbox.last_message.sender != current_user %}style="border-left: 5px solid blue;"{% endif %}>
+
+            <div class="media">
+              <img src="https://mdbootstrap.com/img/new/avatars/2.jpg" alt="user" width="50" class="rounded-circle">
+              <div class="media-body ml-4">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <h6 class="mb-0">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
+                  <small class="small font-weight-bold">{{ inbox.updated_at|date:"d M H:i" }}</small>
+                </div>
+                <p class="font-italic text-small mb-0">{% if inbox.last_message.sender == current_user %} Siz: {% endif %} {{ inbox.last_message.content }}</p>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+
+      {% endif %}
+  
+    </div>
+  </div>
+  
+  
+  
+  
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head %}
+
+{% endblock head %}
+
+
+{% block body %}
+
+<script type="text/javascript">
+    var advertId = "{{ advert_id }}";
+    var userId = "{{ user_id }}";
+    var currentUserId = "{{ current_user.id }}";
+
+    function loadMessages() {
+        var oldMessagesJson = '{{ old_messages_json|escapejs }}';
+        var oldMessages = JSON.parse(oldMessagesJson);
+        
+        var chatLog = document.getElementById('chat-log');
+        chatLog.innerHTML = ""; // Mevcut içeriği temizle
+        oldMessages.forEach(function(message) {
+            var messageComponent = createMessageComponent(
+                chatLog,
+                message.sender__id,
+                message.sender__username, 
+                message.content, 
+                'https://mdbootstrap.com/img/new/avatars/2.jpg', // Profil resmi URL'si
+                message.created_at
+            );
+        });
+    }
+    
+
+    function createMessageComponent(chatLog, sender_id, username, message, profilePicUrl, time) {
+        currentUserId = parseInt(currentUserId);
+        var messageDiv = document.createElement('div');
+        messageDiv.className = `media w-50 mb-3 ${sender_id === currentUserId ? 'ml-auto' : ''}`;
+        messageDiv.style = 'align-items: center; display: flex;';  // Dikey merkezleme için
+    
+        var img = document.createElement('img');
+        img.src = profilePicUrl;
+        img.alt = 'user';
+        img.width = 50;
+        img.className = 'rounded-circle';
+        img.style = 'margin-right: 10px;';
+    
+        var mediaBody = document.createElement('div');
+        mediaBody.className = 'media-body';
+        mediaBody.style = 'display: flex; flex-direction: column; justify-content: center;';  // İçeriği dikey olarak merkezle
+    
+        var usernameP = document.createElement('p');
+        usernameP.className = 'small text-muted';
+        usernameP.textContent = '@' + username;
+        usernameP.style = 'margin-bottom: 5px;';  // Kullanıcı adı ile mesaj arasındaki boşluğu azalt
+    
+        var msgBox = document.createElement('div');
+        msgBox.className = `rounded py-2 px-3 mb-2 ${sender_id === currentUserId ? 'bg-primary' : 'bg-light'}`;
+        msgBox.style = 'margin-top: 0;';  // Mesajın üst marjinini sıfırla
+    
+        var msgText = document.createElement('p');
+        msgText.className = `text-small mb-0 ${sender_id === currentUserId ? 'text-white' : 'text-muted'}`;
+        msgText.textContent = message;
+    
+        var timeP = document.createElement('p');
+        timeP.className = 'small text-muted';
+        timeP.textContent = time;
+    
+
+        if (sender_id !== currentUserId) {
+            mediaBody.appendChild(usernameP);
+        }
+
+        mediaBody.appendChild(msgBox);
+        msgBox.appendChild(msgText);
+        mediaBody.appendChild(timeP);
+    
+        if (sender_id !== currentUserId) {
+            messageDiv.appendChild(img);
+        }
+        messageDiv.appendChild(mediaBody);
+    
+        chatLog.appendChild(messageDiv);
+        scrollToBottom();
+    }
+        
+          
+
+      function scrollToBottom() {
+        var chatLog = document.getElementById("chat-log");
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    // Sayfa yüklendiğinde mesajları yükle
+    window.onload = loadMessages;
+</script>
+
+
+<div class="container-fluid d-flex justify-content-center">
+    <div class="w-75 col-md-12">
+        <div>
+            <div id="chat-log" class="border w-100" style="overflow-y: scroll; height: 450px;">
+
+                        
+            </div>
+
+            <br>
+            <div class="d-flex">
+                <input id="chat-message-input" type="text" class="flex-grow-1 form-control" placeholder="Mesajınızı yazın">
+                <button id="chat-message-submit" class="btn btn-primary ml-2">Gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'js/chat/ChatSocket.js' %}"></script>
+
+
+{% endblock  %}
