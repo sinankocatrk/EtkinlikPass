@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
 from .models import CustomUser
-from .forms import CustomUserCreationForm 
+from .forms import CustomUserCreationForm ,UserProfileForm
+from django.contrib.auth.decorators import login_required
+
+
 
 
 
@@ -62,6 +65,21 @@ def logoutUser(request):
     logout(request)
     messages.success(request,"Başarıyla çıkış yaptınız.")
     return redirect("index")
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profiliniz başarıyla güncellendi.')
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+    return render(request, "profile.html", context)
 
 def index(request):
     return render(request,"index.html")
