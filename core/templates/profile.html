@@ -9,10 +9,43 @@
 {% block body %}
 <div class="container">
     <h2>Kullanıcı Profili</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Güncelle</button>
-    </form>
+
+    <hr>
+    <div class="row">
+        <!-- Profil resmi için user.profile_photo.url kullanıldı -->
+        <div class="col-md-4">
+            {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" class="img-fluid" alt="Profile Image">
+            {% else %}
+                <img src="/media/profile_photos/default-avatar.png" class="img-fluid" alt="Default Profile Image">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h3>{{ user.username }}</h3>
+            <!-- Kullanıcı bilgileri ve profil güncelleme linki -->
+            <p>{{ user.email }}</p>
+            <p>{{ user.first_name }} {{ user.last_name }}</p>
+            <p>{{ user.city }}</p>
+            <a class="btn btn-primary" href="{% url 'user:profile_edit' %}">Profil Güncelle</a>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Favori İlanlar -->
+    {% if user.is_authenticated %}
+    <h3>Favori İlanlarım</h3>
+    <ul>
+        {% for advert in user.favorites.all %}
+            <li>
+                <a href="{% url 'advert:advertdetail' advert.id %}">{{ advert.event.title }}</a>
+            </li>
+        {% empty %}
+            <p>Favori ilanınız bulunmamaktadır.</p>
+        {% endfor %}
+    </ul>
+    
+    {% else %}
+    <p>Giriş yapmalısınız.</p>
+    {% endif %}
 </div>
 {% endblock %}

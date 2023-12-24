@@ -18,3 +18,4 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title} {self.city} {self.start_time.strftime('%Y-%m-%d %H:%M')}"
     
+
