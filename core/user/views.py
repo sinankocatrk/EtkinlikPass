@@ -9,6 +9,7 @@ from .forms import CustomUserCreationForm
 
 
 
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -62,6 +63,31 @@ def logoutUser(request):
     logout(request)
     messages.success(request,"Başarıyla çıkış yaptınız.")
     return redirect("index")
+
+@login_required
+def profile_edit(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profiliniz başarıyla güncellendi.')
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+    return render(request, "profile_edit.html", context)
+
+def profile(request):  
+    current_user = request.user
+    favorite_adverts = current_user.favorites.all() if current_user.is_authenticated else None
+    context = {
+        'current_user': current_user,
+        'favorite_adverts': favorite_adverts,
+    }
+    return render(request, "profile.html", context)
+
 
 def index(request):
     return render(request,"index.html")

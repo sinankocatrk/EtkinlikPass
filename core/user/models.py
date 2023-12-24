@@ -12,6 +12,9 @@ class CustomUser(AbstractUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     password = models.CharField(max_length=30, blank=False )
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+    favorites = models.ManyToManyField('advert.Advert', related_name='favorited_by', blank=True)
+
 
 
 class UserRelation(models.Model):

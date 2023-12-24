@@ -1,11 +1,13 @@
 from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
-from .forms import AdvertForm
-from .models import Event,Advert
+from .forms import AdvertForm,DeleteReasonForm,ReportAdvertForm
+from .models import Event,Advert,DeleteReason,ComplaintReason
 from user.models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django import forms 
 from django.contrib.auth import login
+from django.utils import timezone
+from django.http import HttpResponseRedirect
 
 def index(request):
     return redirect("/")
@@ -52,20 +54,56 @@ def myadvert(request):
 
 
 
-def advertdetail(request,id):
-    advert = get_object_or_404(Advert,id=id)
-    current_user = None
-    if request.user.is_authenticated:
-        current_user = CustomUser.objects.get(id=request.user.id)
-    
+
+def advertdetail(request, id):
+    advert = get_object_or_404(Advert, id=id)
+    current_user = request.user if request.user.is_authenticated else None
+    report_form = ReportAdvertForm(request.POST or None)
+
+
+    if request.method == 'POST':
+        if 'report' in request.POST:  # Şikayet formu için bir buton adı belirleyin
+            # Şikayet işlemleri
+            # ...
+            if report_form.is_valid():
+                reason = report_form.cleaned_data.get('reason')
+                additional_info = report_form.cleaned_data.get('additional_info')
+                
+                ComplaintReason.objects.create(
+                    advert=advert,
+                    reason=reason,
+                    additional_info=additional_info,
+                    user=current_user
+                )
+                
+                messages.success(request, 'İlan başarıyla şikayet edildi.')
+                return HttpResponseRedirect(request.path_info)
+            
+        elif 'favorite' in request.POST:
+            if current_user.is_authenticated:
+                if advert in current_user.favorites.all():
+                    # İlan zaten favorilere eklenmiş, uyarı mesajı göster
+                    messages.info(request, 'Bu ilan favorilerinizden silindi.')
+                    #favoriden sil
+                    current_user.favorites.remove(advert)
+                else:
+                    # İlanı favorilere ekle
+                    current_user.favorites.add(advert)
+                    messages.success(request, 'İlan favorilere eklendi.')
+            else:
+                messages.error(request, 'Favorilere eklemek için giriş yapmalısınız.')
+            redirect('advert:advertdetail', id=advert.id)
+
+
     context = {
-        "advert" : advert,
-        "user" : current_user
+        "advert": advert,
+        "user": current_user,
+        "report_form": report_form  
     }
 
-    
-    
-    return render(request,"advertdetail.html",context)
+    return render(request, "advertdetail.html", context)
+
+
 
 @login_required(login_url="user:login")
 def update(request, id):
@@ -99,18 +137,28 @@ def update(request, id):
 
 @login_required(login_url="user:login")
 def delete(request, id):
-
-    if not request.user.is_authenticated:
-        messages.error(request, "İlan silmek için giriş yapmalısınız.")
-        return redirect("login")  
-
     advert = get_object_or_404(Advert, id=id)
-
 
     if advert.author != request.user:
         messages.error(request, "Bu ilanı silme yetkiniz yok.")
         return redirect("index") 
 
-    advert.delete()
-    messages.success(request, "İlan başarıyla silindi")
-    return redirect("advert:myadvert")
+    if request.method == 'POST':
+        form = DeleteReasonForm(request.POST)
+        if form.is_valid():
+            # Silme nedenini kaydedin.
+            DeleteReason.objects.create(
+                advert=advert,
+                reason=form.cleaned_data['reason'],
+                user=request.user
+            )
+            # İlanı silmek yerine silinmiş olarak işaretleyin.
+            advert.is_deleted = True
+            advert.deleted_at = timezone.now()
+            advert.save()
+            messages.success(request, "İlan başarıyla silindi")
+            return redirect("advert:myadvert")
+    else:
+        form = DeleteReasonForm()
+
+    return render(request, 'delete_advert.html', {'form': form})
