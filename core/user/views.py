@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
 from .models import CustomUser
-from .forms import CustomUserCreationForm 
+from .forms import CustomUserCreationForm ,UserProfileForm
+from django.contrib.auth.decorators import login_required
+
+
 
 
 
@@ -66,6 +69,7 @@ def logoutUser(request):
 
 @login_required
 def profile_edit(request):
+
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -77,6 +81,7 @@ def profile_edit(request):
     context = {
         'form': form
     }
+
     return render(request, "profile_edit.html", context)
 
 def profile(request):  
@@ -87,6 +92,7 @@ def profile(request):
         'favorite_adverts': favorite_adverts,
     }
     return render(request, "profile.html", context)
+
 
 
 def index(request):

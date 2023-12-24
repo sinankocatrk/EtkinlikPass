@@ -143,3 +143,11 @@ a {
   text-decoration: line-through;
   opacity: 70%;
 }
+
+.navbar-profile-photo {
+  width: 40px;  /* Kare şekli için genişlik ve yüksekliği aynı yapın */
+  height: 40px; /* Kare şekli için genişlik ve yüksekliği aynı yapın */
+  border-radius: 50%; /* Fotoğrafın köşelerini yuvarlak yapar, tam yuvarlak istemiyorsanız bu değeri azaltabilirsiniz */
+  object-fit: cover; /* Fotoğrafın içeriği kırpılır ve boyutu doldurulur */
+  object-position: center; /* Fotoğrafın odak noktasını ortaya alır */
+}

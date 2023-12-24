@@ -12,7 +12,6 @@ class Event(models.Model):
     is_free = models.BooleanField(default=False)
     ticket_url = models.URLField(max_length=200, blank=True, null=True)
 
-
     class Meta:
         ordering = ['title']  # Başlığa göre alfabetik sırala
 
@@ -20,4 +19,3 @@ class Event(models.Model):
         return f"{self.title} {self.city} {self.start_time.strftime('%Y-%m-%d %H:%M')}"
     
 
-    

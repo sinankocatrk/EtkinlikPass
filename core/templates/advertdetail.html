@@ -37,15 +37,15 @@
                 <div class="col-lg-4 col-md-12 right-box">
 
                     {% if request.user.is_authenticated %}
-                        {% if request.user.id == advert.author.id %}
+                    {% if request.user.id == advert.author.id %}
                             <div class="card">
                                 <div class="d-flex flex-column justify-content-center align-items-center header">
                                     <div class="mt-2">
-                                        <button>
-                                            <i class="fas fa-edit"></i>
+                                        <button onclick="location.href='{% url 'advert:update' advert.id %}';">
+                                            <i class="fa fa-edit"></i>
                                         </button>
-            
-                                        <button>
+
+                                        <button onclick="location.href='{% url 'advert:delete' advert.id %}';">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </div>
@@ -53,6 +53,7 @@
                             </div>
                         {% endif %}
                     {% endif %}
+
 
 
                     <div class="card">

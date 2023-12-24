@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
-
+from .views import profile
 app_name= "user"
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', views.logoutUser,name= "logout"),
     path('profile/', views.profile,name= "profile"),
     path('profile_edit/', views.profile_edit, name='profile_edit'),
+
 ]
