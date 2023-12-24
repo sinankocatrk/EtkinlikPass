@@ -45,3 +45,19 @@ class LoginForm(forms.Form):
 
         user = authenticate(username=username, password=password)
         return user
+
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email', 'city', 'profile_photo']
+        widgets = {
+            'profile_photo': forms.FileInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        # Form alanları için özel ayarlar yapabilirsiniz. Örneğin:
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        # Benzer şekilde diğer alanlar için de özel stil veya davranış tanımlayabilirsiniz.

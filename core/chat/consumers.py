@@ -4,6 +4,7 @@ import django
 from django.utils import timezone
 from django.template.defaultfilters import date as _date
 from channels.db import database_sync_to_async
+from channels.auth import get_user
 
 class Consumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -88,6 +89,8 @@ class Consumer(AsyncWebsocketConsumer):
     def save_message(self, inbox, message_text):
         from chat.models import Message
         from user.models import CustomUser
+
+        
 
         user = CustomUser.objects.get(id=self.scope['user'].id)
         message = Message.objects.create(inbox=inbox, sender=user, content=message_text, created_at=django.utils.timezone.now())

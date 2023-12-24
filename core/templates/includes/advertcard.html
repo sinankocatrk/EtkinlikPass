@@ -49,7 +49,8 @@
 
           <div class="d-flex align-items-center ml-auto">
             <a href="#" class="mx-1" >{{advert.author.username}}</a>
-            <img class="rounded-circle mx-1" src="https://mdbootstrap.com/img/new/avatars/2.jpg" height="25" alt="">
+            <img  class="rounded-circle mx-1 navbar-profile-photo" src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}https://mdbootstrap.com/img/new/avatars/2.jpg{% endif %}" height="25" alt="">
+
           </div>
         </div>
         <div class="d-flex flex-wrap align-items-center py-2">
