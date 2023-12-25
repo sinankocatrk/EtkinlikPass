@@ -57,14 +57,13 @@ def myadvert(request):
 
 def advertdetail(request, id):
     advert = get_object_or_404(Advert, id=id)
-    current_user = request.user if request.user.is_authenticated else None
+    current_user_id = request.user.id if request.user.is_authenticated else None
+    current_user = CustomUser.objects.get(id=current_user_id) if current_user_id else None
     report_form = ReportAdvertForm(request.POST or None)
 
 
     if request.method == 'POST':
-        if 'report' in request.POST:  # Şikayet formu için bir buton adı belirleyin
-            # Şikayet işlemleri
-            # ...
+        if 'report' in request.POST:
             if report_form.is_valid():
                 reason = report_form.cleaned_data.get('reason')
                 additional_info = report_form.cleaned_data.get('additional_info')
@@ -82,12 +81,9 @@ def advertdetail(request, id):
         elif 'favorite' in request.POST:
             if current_user.is_authenticated:
                 if advert in current_user.favorites.all():
-                    # İlan zaten favorilere eklenmiş, uyarı mesajı göster
                     messages.info(request, 'Bu ilan favorilerinizden silindi.')
-                    #favoriden sil
                     current_user.favorites.remove(advert)
                 else:
-                    # İlanı favorilere ekle
                     current_user.favorites.add(advert)
                     messages.success(request, 'İlan favorilere eklendi.')
             else:
@@ -146,13 +142,11 @@ def delete(request, id):
     if request.method == 'POST':
         form = DeleteReasonForm(request.POST)
         if form.is_valid():
-            # Silme nedenini kaydedin.
             DeleteReason.objects.create(
                 advert=advert,
                 reason=form.cleaned_data['reason'],
                 user=request.user
             )
-            # İlanı silmek yerine silinmiş olarak işaretleyin.
             advert.is_deleted = True
             advert.deleted_at = timezone.now()
             advert.save()

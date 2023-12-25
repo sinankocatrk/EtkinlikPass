@@ -1,2 +1,2 @@
-uvicorn core.asgi:application --port 8001
+uvicorn core.asgi:application --host localhost --port 8001
 redis'i çalıştır

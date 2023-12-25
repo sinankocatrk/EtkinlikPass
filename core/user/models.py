@@ -16,9 +16,6 @@ class CustomUser(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     favorites = models.ManyToManyField('advert.Advert', related_name='favorited_by', blank=True)
 
-
-
-
 class UserRelation(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
