@@ -34,6 +34,9 @@ class Consumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
+        if message == '':
+            return
+
         inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
         db_message = await self.save_message(inbox, message)
 
@@ -53,7 +56,7 @@ class Consumer(AsyncWebsocketConsumer):
 
     # Grup mesajı işleyici
     async def chat_message(self, event):
-        # Event'ten bilgileri al
+
         sender_id = event['sender_id']
         current_user_id = event['current_user_id']
         username = event['username']

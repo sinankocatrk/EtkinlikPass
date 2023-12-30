@@ -7,12 +7,6 @@ from .models import CustomUser
 from .forms import CustomUserCreationForm ,UserProfileForm
 from django.contrib.auth.decorators import login_required
 
-
-
-
-
-
-
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -84,11 +78,12 @@ def profile_edit(request):
 
     return render(request, "profile_edit.html", context)
 
-def profile(request):  
-    current_user = request.user
-    favorite_adverts = current_user.favorites.all() if current_user.is_authenticated else None
+def profile(request, id):
+    profile_user = CustomUser.objects.get(id=id)
+    print(profile_user.username)
+    favorite_adverts = profile_user.favorites.all() if profile_user.id == request.user.id else None
     context = {
-        'current_user': current_user,
+        'profile_user': profile_user,
         'favorite_adverts': favorite_adverts,
     }
     return render(request, "profile.html", context)
