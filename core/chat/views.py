@@ -1,10 +1,8 @@
 import datetime
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core import serializers
 import json
 from django.db.models.functions import Cast
 from django.db.models import CharField
-from isodate import parse_datetime
 
 from advert.models import Advert
 from user.models import CustomUser
@@ -34,12 +32,10 @@ def chat_room(request, advert_id, user_id):
             message.is_read = True
             message.save()
 
-    # Kullanıcının ait olduğu Inbox'ın eski mesajlarını al
     old_messages = Message.objects.filter(inbox=inbox).annotate(
     formatted_date=Cast('created_at', CharField())
     ).values('sender__id', 'sender__username', 'content', 'created_at')
 
-    # Listenin her bir öğesinde tarihi formatla
     for message in old_messages:
         message['created_at'] = _date(timezone.localtime(message['created_at']), "SHORT_DATETIME_FORMAT")
 

@@ -23,6 +23,8 @@ def register(request):
 
             else:
                 user = form.save()
+                user.profile_photo = "profile_photos/DefaultProfileIcon.png"
+                user.save()
                 login(request, user)
                 messages.success(request, "Başarıyla kayıt oldunuz.")
                 return redirect("/")

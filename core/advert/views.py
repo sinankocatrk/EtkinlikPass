@@ -61,9 +61,14 @@ def advertdetail(request, id):
     current_user = CustomUser.objects.get(id=current_user_id) if current_user_id else None
     report_form = ReportAdvertForm(request.POST or None)
 
-
     if request.method == 'POST':
-        if 'report' in request.POST:
+        if 'reason' in request.POST:
+            complait_reasons_of_user = ComplaintReason.objects.filter(advert=advert, user=current_user)
+
+            if complait_reasons_of_user:
+                messages.info(request, 'Bu ilanı daha önce şikayet ettiniz.')
+                return redirect('advert:advertdetail', id=advert.id)
+
             if report_form.is_valid():
                 reason = report_form.cleaned_data.get('reason')
                 additional_info = report_form.cleaned_data.get('additional_info')
@@ -76,7 +81,7 @@ def advertdetail(request, id):
                 )
                 
                 messages.success(request, 'İlan başarıyla şikayet edildi.')
-                return HttpResponseRedirect(request.path_info)
+                return redirect('advert:advertdetail', id=advert.id)
             
         elif 'favorite' in request.POST:
             if current_user.is_authenticated:
@@ -88,12 +93,12 @@ def advertdetail(request, id):
                     messages.success(request, 'İlan favorilere eklendi.')
             else:
                 messages.error(request, 'Favorilere eklemek için giriş yapmalısınız.')
-            redirect('advert:advertdetail', id=advert.id)
+            return redirect('advert:advertdetail', id=advert.id)
 
 
     context = {
         "advert": advert,
-        "user": current_user,
+        "current_user": current_user,
         "report_form": report_form  
     }
 
@@ -132,23 +137,25 @@ def update(request, id):
     return render(request, "update.html", context)
 
 @login_required(login_url="user:login")
-def delete(request, id):
-    advert = get_object_or_404(Advert, id=id)
+def delete(request, advert_id):
+    current_user = CustomUser.objects.get(id=request.user.id) if request.user.is_authenticated else None
+    advert = get_object_or_404(Advert, id=advert_id)
 
-    if advert.author != request.user:
+    if advert.author != current_user:
         messages.error(request, "Bu ilanı silme yetkiniz yok.")
         return redirect("index") 
 
     if request.method == 'POST':
         form = DeleteReasonForm(request.POST)
         if form.is_valid():
-            DeleteReason.objects.create(
+            delete_reason = DeleteReason.objects.create(
                 advert=advert,
                 reason=form.cleaned_data['reason'],
                 user=request.user
             )
             advert.is_deleted = True
             advert.deleted_at = timezone.now()
+            advert.DeleteReason = delete_reason
             advert.save()
             messages.success(request, "İlan başarıyla silindi")
             return redirect("advert:myadvert")

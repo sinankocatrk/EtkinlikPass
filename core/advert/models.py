@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from event.models import Event
 from user.models import CustomUser as User 
@@ -9,6 +10,9 @@ class Advert(models.Model):
     price = models.IntegerField(null=True)
     seller_description = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
+    DeleteReason = models.OneToOneField('DeleteReason', on_delete=models.CASCADE, null=True, blank=True, related_name='DeleteReason')
+    deleted_at = models.DateTimeField(null=True, blank=True)
     
 
     def __str__(self):
@@ -23,7 +27,7 @@ class DeleteReason(models.Model):
         ('withdraw', 'Satmaktan Vazgeçildi')
     ]
 
-    advert = models.OneToOneField(Advert, on_delete=models.CASCADE)
+    advert = models.OneToOneField(Advert, on_delete=models.CASCADE, related_name='deleted_advert')
     reason = models.CharField(max_length=100, choices=REASON_CHOICES)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -44,3 +48,4 @@ class ComplaintReason(models.Model):
 
     def __str__(self):
         return f"{self.advert} - {self.reason}"
+    

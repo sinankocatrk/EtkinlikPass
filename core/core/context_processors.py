@@ -20,3 +20,13 @@ def unread_message_count(request):
             if message.sender != user and message.is_read is False:
                 total_unread_count += 1
     return {'unread_message_count': total_unread_count}
+
+def current_user_cp(request):
+    user = None
+    if request.user.is_authenticated:
+        user = CustomUser.objects.get(id=request.user.id)
+    else:
+        user = None
+
+    print("current_user_cp")
+    return {'current_user_cp': user}

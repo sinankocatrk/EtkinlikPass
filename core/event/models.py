@@ -16,6 +16,6 @@ class Event(models.Model):
         ordering = ['title']  # Başlığa göre alfabetik sırala
 
     def __str__(self):
-        return f"{self.title} {self.city} {self.start_time.strftime('%Y-%m-%d %H:%M')}"
+        return f"{self.title} - {self.city} - {self.location} - {self.start_time.strftime('%d.%m.%Y')}"
     
 

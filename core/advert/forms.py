@@ -4,9 +4,24 @@ from event.models import Event
 
 
 class AdvertForm(forms.ModelForm):
+    event = forms.ModelChoiceField(
+        queryset=Event.objects.all(),
+        widget=forms.Select(attrs={'class': 'select2', 'style': 'width: 100%;'}),
+        label='Etkinlik:'
+    )
+    seller_description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        label='Açıklama:'
+    )
+    price = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        label='Fiyat:'
+    )
+
     class Meta:
         model = Advert
-        fields = ['event', 'seller_description', 'price'] 
+        fields = ['event', 'seller_description', 'price']
+
 
 
 

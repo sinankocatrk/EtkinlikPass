@@ -15,26 +15,49 @@
     <div class="container">
       <div class="row g-4 py-5">
 
-        {% if not all_adverts %}
+        {% if not all_adverts or undeleted_adverts_count == 0 %}
 
-        <div class="col-md-12">
-          <div class="alert alert-danger" role="alert">
-            <h4 class="alert-heading">Uyarı!</h4>
-            <p>Henüz hiçbir ilan yayınlanmamış.</p>
-            <hr>
-            {% if request.user.is_authenticated %}
-            <p class="mb-0">İlan yayınlamak için <a href="{% url 'advert:addadvert' %}">buraya</a> tıklayın.</p>
-            {% else %}
-            <p class="mb-0">İlan yayınlamak için <a href="{% url 'user:login' %}">buraya</a> tıklayın.</p>
-            {% endif %}
-            
-        </div>
+          {% if keyword %}
+
+            <div class="col-md-12">
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Uyarı!</h4>
+                <p>Aradığınız kriterlere uygun ilan bulunamadı.</p>
+                <hr>
+                {% if request.user.is_authenticated %}
+                <p class="mb-0">İlan yayınlamak için <a href="{% url 'advert:addadvert' %}">buraya</a> tıklayın.</p>
+                {% else %}
+                <p class="mb-0">İlan yayınlamak için <a href="{% url 'user:login' %}">buraya</a> tıklayın.</p>
+                {% endif %}
+                
+            </div>
+
+          {% else %}
+
+            <div class="col-md-12">
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Uyarı!</h4>
+                <p>Henüz hiçbir ilan yayınlanmamış.</p>
+                <hr>
+                {% if request.user.is_authenticated %}
+                <p class="mb-0">İlan yayınlamak için <a href="{% url 'advert:addadvert' %}">buraya</a> tıklayın.</p>
+                {% else %}
+                <p class="mb-0">İlan yayınlamak için <a href="{% url 'user:login' %}">buraya</a> tıklayın.</p>
+                {% endif %}
+                
+            </div>
+
+          {% endif %}
 
         {% else %}
 
         {% for advert in all_adverts %}
 
-            {% include "includes/advertcard.html" %}
+            {% if not advert.is_deleted %}
+
+              {% include "includes/advertcard.html" %}
+
+            {% endif %}
         
         {% endfor %}
 
