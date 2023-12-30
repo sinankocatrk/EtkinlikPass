@@ -5,6 +5,27 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <link rel="stylesheet" href="{% static 'css/advertdetail.css' %}">
+
+
+<style>
+  .profile-image-container {
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-image-container img {
+    height: auto;
+    width: 50%;
+    min-width: 250px;
+    object-fit: cover;
+}
+</style>
+
+
 {% endblock %}
 
 {% block body %}
@@ -13,13 +34,13 @@
     <div class="row align-items-stretch">
 
         <div class="col-md-4 d-flex">
-            <div class="align-self-stretch w-100">
-                {% if profile_user.profile_photo %}
-                    <img src="{{ profile_user.profile_photo.url }}" class="img-fluid" alt="Profile Image" style="object-fit: cover; height: 100%;"> <!-- yükseklik 100% olarak ayarlandı -->
-                {% else %}
-                    <img src="/media/profile_photos/default-avatar.png" class="img-fluid" alt="Default Profile Image" style="object-fit: cover; height: 100%;"> <!-- yükseklik 100% olarak ayarlandı -->
-                {% endif %}
-            </div>
+          <div class="align-self-stretch w-100 profile-image-container">
+              {% if profile_user.profile_photo %}
+                  <img src="{{ profile_user.profile_photo.url }}" class="img-fluid" alt="Profile Image">
+              {% else %}
+                  <img src="/media/profile_photos/default-avatar.png" class="img-fluid" alt="Default Profile Image">
+              {% endif %}
+          </div>                      
         </div>
     
         <div class="col-md-8 d-flex">

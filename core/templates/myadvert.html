@@ -1,37 +1,42 @@
 {% extends 'layout.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/advertdetail.css' %}">
+{% endblock head %}
 
 {% block body %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
+<div class="d-flex justify-content-center row">
+    <div class="w-75">
 
-        <h2>Kontrol Paneli</h2> 
-        <hr>
-        <p>Hoşgeldiniz, <small>{{request.user.username}} </small></p>  <hr>
+        <h2>İlanlarım</h2> 
         {% if form  %}
         <table class="table">
                 <thead>
                 <tr>
-                    
+                    <th scope="col"></th>
                     <th scope="col">Etkinlik</th>
                     <th scope="col">Fiyat</th>
                     <th scope="col">Tarih</th>
                     <th scope="col">Yer</th>
-                    <th scope="col">Açıklama</th>
                     <th scope="col">Güncelle</th>
                     <th scope="col">Sil</th>
+                    <th scope="col">Silinme Tarihi</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for advert in form  %}
                 <tr>
-                    <th scope="row">{{advert.event.title}}</th>
-                    <td><a href="">{{advert.price}}</a></td>
+                    <th scope="row"><a href="{% url 'advert:advertdetail' advert.id %}"><img src="{{advert.event.image_url}}" width="100"></a></th>
+                    <th scope="row"><a href="{% url 'advert:advertdetail' advert.id %}">{{advert.event.title}}</a></th>
+                    <td scope="row" class="text-success">{{advert.price}} TL</td>
                     <td>{{advert.event.start_time}}</td>
                     <td>{{advert.event.city}}</td>
-                    <td>{{advert.seller_description}}</td>
-                    <td><a href="{% url 'advert:update' advert.id %}" class = "btn btn-danger">Güncelle</a></td>
-                    <td><a href="{% url 'advert:delete' advert.id %}" class = "btn btn-danger">Sil</a> </td>
+                    <td><a href="{% url 'advert:update' advert.id %}" class="btn btn-danger {% if advert.is_deleted %} disabled {% endif %}">Güncelle</a></td>                      
+                    <td><a href="{% url 'advert:delete' advert.id %}" class = "btn btn-danger {% if advert.is_deleted %} disabled {% endif %}">Sil</a> </td>
+                    <td>{% if advert.is_deleted %} {{advert.deleted_at}} {% else %} - {% endif %} </td>
+
                     {% comment %} <td><a href="/advert/update/{{advert.id}}" class = "btn btn-danger">Güncelle</a></td>
                     <td><a href="/advert/delete/{{advert.id}}" class = "btn btn-danger">Sil</a> </td> {% endcomment %}
 
@@ -52,7 +57,7 @@
             <br>
             <a href="/advert/addadvert">
                 <button>İlan Ekle</button>
-              </a> 
+            </a> 
 
     </div>
 </div>

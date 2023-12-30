@@ -52,11 +52,11 @@
         var usernameP = document.createElement('p');
         usernameP.className = 'small text-muted';
         usernameP.textContent = '@' + username;
-        usernameP.style = 'margin-bottom: 5px;';  // Kullanıcı adı ile mesaj arasındaki boşluğu azalt
+        usernameP.style = 'margin-bottom: 5px;';
     
         var msgBox = document.createElement('div');
         msgBox.className = `rounded py-2 px-3 mb-2 ${sender_id === currentUserId ? 'bg-primary' : 'bg-light'}`;
-        msgBox.style = 'margin-top: 0;';  // Mesajın üst marjinini sıfırla
+        msgBox.style = 'margin-top: 0;';
     
         var msgText = document.createElement('p');
         msgText.className = `text-small mb-0 ${sender_id === currentUserId ? 'text-white' : 'text-muted'}`;

@@ -60,14 +60,18 @@
                         <div class="d-flex flex-column justify-content-center align-items-center header">
                             <h2 class="mb-2 text-success">{{advert.price}} TL</h2>
                             <p>{{advert.seller_description}}</p>
+
+                            {% if advert.author != current_user %} 
                             <div class="mt-2 d-flex align-items-center gap-2">
 
                                 {% if user %}
-                                <a href='{% url 'chat:chat_room' advert.id user.id %}'>
-                                    <button>
-                                        <i class="fa-solid fa-message"></i>
-                                    </button>
-                                </a>
+
+                                        <a href='{% url 'chat:chat_room' advert.id current_user.id %}'>
+                                            <button class="{% if advert.author is current_user %} disabled {% endif %}">
+                                                <i class="fa-solid fa-message"></i>
+                                            </button>
+                                        </a>
+                                    
                                 {% else %}
                                 <a href='{% url 'user:login' %}'>
                                     <button>
@@ -92,32 +96,40 @@
                                     <i class="fa-solid fa-flag"></i>
                                 </button>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
 
-                <!-- Şikayet Etme Modalı -->
-                <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="reportModalLabel">İlanı Şikayet Et</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="post" id="reportForm">
-                                    {% csrf_token %}
-                                    {{ report_form }}
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                                <button type="button" class="btn btn-danger" onclick="document.getElementById('reportForm').submit();">Şikayet Et</button>
+                    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reportModalLabel">İlanı Şikayet Et</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" id="reportForm">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="id_reason">Şikayet Nedeni:</label>
+                                            {{ report_form.reason }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_additional_info">Ek Bilgi:</label>
+                                            {{ report_form.additional_info }}
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                                    <button type="button" class="btn btn-danger" onclick="document.getElementById('reportForm').submit();">Şikayet Et</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    
 
 
                     
@@ -126,16 +138,16 @@
                         <div class="d-flex flex-column justify-content-center align-items-center header">
                             <span class="mb-2">{{advert.event.city}}</span>
                             <span class="mb-2">{{advert.event.location}}</span>
-                            <span class="mb-2">{{advert.event.start_time}}</span>
+                            <span class="mb-2">{{advert.event.start_time|date:'d.m.Y h:i'}}</span>
                         </div>
                     </div>
 
                     <div class="d-flex flex-column justify-content-center align-items-md-center card p-4">
 
                         {% if advert.author.profile_photo %}
-                                 <img class="rounded-circle" src="{{ advert.author.profile_photo.url }}" height="75">
+                            <img class="rounded-circle navbar-profile-photo" src="{{ advert.author.profile_photo.url }}">
                         {% else %}
-                            <img class="rounded-circle" src="https://mdbootstrap.com/img/new/avatars/2.jpg" height="75">
+                            <img class="rounded-circle navbar-profile-photo" src="https://mdbootstrap.com/img/new/avatars/2.jpg">
                         {% endif %}
 
 

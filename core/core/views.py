@@ -1,21 +1,31 @@
 from django.shortcuts import render
 from advert.models import Advert
-#        items = S2021.objects.filter(punvani=id)
-#    punvani = S2021.objects.values_list('punvani', flat=True).distinct()
+
 def index(request):
 
     print(request.user.id)
     all_adverts = Advert.objects.all()
+
+    undeleted_adverts_count = all_adverts.filter(is_deleted=False).count()
+
     keyword = request.GET.get("keyword")
 
 
     if keyword :
-        keyword=keyword.replace("i","İ").replace("ı","I").replace("ö","Ö").replace("ü","Ü").replace("ç","Ç").replace("ş","Ş").replace("ğ","Ğ").replace(" ","").upper()
-        all_adverts = Advert.objects.filter(event__title__contains = keyword)
-        return render(request,"index.html",{"all_adverts":all_adverts})
+        keyword = keyword.lower()
+        filtered_adverts = Advert.objects.filter(event__title__icontains=keyword)
+        undeleted_filtered_adverts_count = filtered_adverts.filter(is_deleted=False).count()
+        filtered_adverts_context = {
+            "all_adverts": filtered_adverts,
+            "undeleted_adverts_count": undeleted_filtered_adverts_count,
+            "keyword": keyword,
+        }
+        return render(request,"index.html",context=filtered_adverts_context)
 
     context = {
-        "all_adverts": all_adverts
+        "all_adverts": all_adverts,
+        "undeleted_adverts_count": undeleted_adverts_count,
+        "keyword": None
     }
 
     return render(request, "index.html", context)
