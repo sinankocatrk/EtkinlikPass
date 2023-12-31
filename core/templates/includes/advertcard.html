@@ -32,21 +32,14 @@
         
         <h6 class="product-title text-truncate"><a href="{% url 'advert:advertdetail' advert.id %}">{{advert.event.title}}</a></h6>
         <span>{{advert.event.location}}</span>
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="review-star me-1">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-regular fa-star-half-stroke"></i>
-            <i class="fa-regular fa-star"></i>
-            <span class="review-count" style="color:black">(13)</span>
-          </div>
+        <div class="d-flex justify-content-end align-items-center">
+
 
           
 
           <div class="d-flex align-items-center ml-auto">
             <a href='{% url 'user:profile' advert.author.id %}' class="mx-1" >{{advert.author.username}}</a>
-            <img  class="rounded-circle mx-1 navbar-profile-photo" src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}https://mdbootstrap.com/img/new/avatars/2.jpg{% endif %}" height="25" alt="">
+            <img  class="rounded-circle mx-1 navbar-profile-photo" src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}/media/profile_photos/DefaultProfileIcon.png{% endif %}" height="25" alt="">
 
           </div>
         </div>

@@ -3,3 +3,4 @@ pip install djangorestframework
 pip install django-crispy-forms
 redis
 uvicorn
+celery

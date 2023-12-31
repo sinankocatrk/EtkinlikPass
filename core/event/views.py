@@ -1,10 +1,13 @@
 import requests
 from .models import Event
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 def index(request):
-    return render(request, 'index.html')
+    return redirect('index')
 
+
+@login_required
 def fetch_and_save_events(request):
 
     api_url = 'https://backend.etkinlik.io/api/v2/events'
@@ -37,3 +40,5 @@ def fetch_and_save_events(request):
                     'ticket_url': event_data.get('ticket_url', ''),
                 }
             )
+
+    return redirect('index')

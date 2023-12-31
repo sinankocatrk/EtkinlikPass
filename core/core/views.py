@@ -3,7 +3,7 @@ from advert.models import Advert
 
 def index(request):
 
-    print(request.user.id)
+
     all_adverts = Advert.objects.all()
 
     undeleted_adverts_count = all_adverts.filter(is_deleted=False).count()

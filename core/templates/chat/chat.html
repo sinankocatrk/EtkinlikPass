@@ -11,21 +11,22 @@
 <script type="text/javascript">
     var advertId = "{{ advert_id }}";
     var userId = "{{ user_id }}";
-    var currentUserId = "{{ current_user.id }}";
+    var currentUserId = "{{ current_user_id }}";
 
     function loadMessages() {
         var oldMessagesJson = '{{ old_messages_json|escapejs }}';
         var oldMessages = JSON.parse(oldMessagesJson);
         
         var chatLog = document.getElementById('chat-log');
-        chatLog.innerHTML = ""; // Mevcut içeriği temizle
+        chatLog.innerHTML = "";
+        console.log(oldMessages);
         oldMessages.forEach(function(message) {
             var messageComponent = createMessageComponent(
                 chatLog,
                 message.sender__id,
                 message.sender__username, 
                 message.content, 
-                'https://mdbootstrap.com/img/new/avatars/2.jpg', // Profil resmi URL'si
+                message.profile_photo_url,
                 message.created_at
             );
         });
@@ -35,8 +36,8 @@
     function createMessageComponent(chatLog, sender_id, username, message, profilePicUrl, time) {
         currentUserId = parseInt(currentUserId);
         var messageDiv = document.createElement('div');
-        messageDiv.className = `media w-50 mb-3 ${sender_id === currentUserId ? 'ml-auto' : ''}`;
-        messageDiv.style = 'align-items: center; display: flex;';  // Dikey merkezleme için
+        messageDiv.className = `media mb-3 `;
+        messageDiv.style = `align-items: center; display: flex; ${sender_id == currentUserId ? 'margin-left: auto; width: 50%;' : ''}`;
     
         var img = document.createElement('img');
         img.src = profilePicUrl;
@@ -47,7 +48,7 @@
     
         var mediaBody = document.createElement('div');
         mediaBody.className = 'media-body';
-        mediaBody.style = 'display: flex; flex-direction: column; justify-content: center;';  // İçeriği dikey olarak merkezle
+        mediaBody.style = `display: flex; flex-direction: column; justify-content: center; ${sender_id == currentUserId ? 'margin-left: auto;' : ''}`;
     
         var usernameP = document.createElement('p');
         usernameP.className = 'small text-muted';
@@ -64,6 +65,7 @@
     
         var timeP = document.createElement('p');
         timeP.className = 'small text-muted';
+        timeP.style = `${sender_id == currentUserId ? 'margin-left: auto;' : ''}`;
         timeP.textContent = time;
     
 
@@ -91,7 +93,6 @@
         chatLog.scrollTop = chatLog.scrollHeight;
     }
     
-    // Sayfa yüklendiğinde mesajları yükle
     window.onload = loadMessages;
 </script>
 
@@ -115,6 +116,19 @@
 
 
 <script src="{% static 'js/chat/ChatSocket.js' %}"></script>
+
+<script type="text/javascript">
+    var chatMessageInput = document.getElementById("chat-message-input");
+    var chatMessageSubmit = document.getElementById("chat-message-submit");
+
+    chatMessageInput.onkeyup = function(e) {
+        if (e.keyCode === 13) {
+            console.log("Enter pressed");
+            chatMessageSubmit.click();
+        }
+    }
+</script>
+
 
 
 {% endblock  %}

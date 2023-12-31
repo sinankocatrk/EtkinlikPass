@@ -1,13 +1,24 @@
 from django import forms 
-from django.shortcuts import render,redirect
 from .models import CustomUser
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 
 class CustomUserCreationForm(forms.Form):
     username = forms.CharField(max_length=50, label="Kullanıcı adı")
     email = forms.EmailField(max_length=100, label="E-posta")
     password = forms.CharField(max_length=20, label="Parola", widget=forms.PasswordInput)
     confirm = forms.CharField(max_length=20, label="Parolayı Doğrula", widget=forms.PasswordInput)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if password:
+
+            try:
+                validate_password(password)
+            except ValidationError as e:
+                raise forms.ValidationError(e.messages)
+        return password
 
     def clean(self):
         cleaned_data = super().clean()
@@ -17,8 +28,10 @@ class CustomUserCreationForm(forms.Form):
         if password and confirm and password != confirm:
             raise forms.ValidationError("Parolalar eşleşmiyor")
 
+        self.clean_password()
+
         return cleaned_data
-    
+
     def save(self):
         username = self.cleaned_data['username']
         email = self.cleaned_data['email']
@@ -32,7 +45,6 @@ class CustomUserCreationForm(forms.Form):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password')
-
 
 
 class LoginForm(forms.Form):
