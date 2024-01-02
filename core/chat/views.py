@@ -11,6 +11,24 @@ from django.utils import timezone
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import date as _date
+from cryptography.fernet import Fernet
+
+
+KEY_FILE = 'message_encrypt.key'
+
+def load_or_create_key():
+    try:
+        with open(KEY_FILE, 'rb') as file:
+            key = file.read().decode()
+    except FileNotFoundError:
+        key = Fernet.generate_key()
+        with open(KEY_FILE, 'wb') as file:
+            file.write(key)
+    return key
+
+key = load_or_create_key()
+print(key)
+cipher_suite = Fernet(key)
 
 class CustomJSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -28,7 +46,6 @@ def chat_room(request, advert_id, user_id):
     current_user = CustomUser.objects.get(id=request.user.id)
     for message in all_messages:
         if message.sender != current_user and message.is_read is False:
-            print(message.content, message.sender.username, current_user.username)
             message.is_read = True
             message.save()
 
@@ -39,7 +56,9 @@ def chat_room(request, advert_id, user_id):
     i=0
     for message in old_messages:
         message['created_at'] = _date(timezone.localtime(message['created_at']), "SHORT_DATETIME_FORMAT")
-        message['profile_photo_url'] = all_messages[i].sender.profile_photo.url if all_messages[i].sender.profile_photo else None
+        decrypted_message = decrypt_message(message['content'])
+        message['content'] = decrypted_message
+        message['profile_photo_url'] = all_messages[i].sender.profile_photo.url if all_messages[i].sender.profile_photo else '/media/profile_photos/DefaultProfileIcon.png'
         i += 1
 
     old_messages_json = json.dumps(list(old_messages), cls=CustomJSONEncoder)
@@ -63,6 +82,15 @@ def inbox(request):
     sender_inboxes = Inbox.objects.filter(sender=user)
     receiver_inboxes = Inbox.objects.filter(receiver=user)
 
+    for inbox in sender_inboxes:
+        print("inbox.last_message.content: ")
+        print(inbox.last_message.content)
+        inbox.last_message.content = decrypt_message(inbox.last_message.content)
+
+    for inbox in receiver_inboxes:
+        print("inbox.last_message.content: " + str(inbox.last_message.content))
+        inbox.last_message.content = decrypt_message(inbox.last_message.content)
+
     context = {
         'sender_inboxes': sender_inboxes,
         'receiver_inboxes': receiver_inboxes,
@@ -83,3 +111,15 @@ def get_or_create_chat(advert_id, user_id):
     inbox, created = Inbox.objects.get_or_create(advert=advert, sender=user, receiver=advert.author)
 
     return inbox
+
+def decrypt_message(encrypted_message):
+    encrypted_message = bytes(encrypted_message, 'utf-8')
+    print(type(encrypted_message))
+    try:
+        decrypted_text = cipher_suite.decrypt(encrypted_message).decode()
+        print(decrypted_text)
+        return decrypted_text
+    except Exception as e:
+        print(f"Hata: {type(e).__name__}, Hata Mesajı: {e}")
+        return None
+
