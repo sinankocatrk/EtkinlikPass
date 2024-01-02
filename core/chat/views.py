@@ -36,19 +36,22 @@ def chat_room(request, advert_id, user_id):
     formatted_date=Cast('created_at', CharField())
     ).values('sender__id', 'sender__username', 'content', 'created_at')
 
+    i=0
     for message in old_messages:
         message['created_at'] = _date(timezone.localtime(message['created_at']), "SHORT_DATETIME_FORMAT")
+        message['profile_photo_url'] = all_messages[i].sender.profile_photo.url if all_messages[i].sender.profile_photo else None
+        i += 1
 
     old_messages_json = json.dumps(list(old_messages), cls=CustomJSONEncoder)
 
-    current_user = CustomUser.objects.get(id=request.user.id)
+    current_user_id = request.user.id
 
     context = {
         'inbox': inbox,
         'advert_id': advert_id,
         'user_id': user_id,
         'old_messages_json': old_messages_json,
-        'current_user': current_user,
+        'current_user_id': current_user_id,
     }
 
     return render(request, 'chat/chat.html', context)

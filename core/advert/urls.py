@@ -8,5 +8,5 @@ urlpatterns = [
     path('addadvert/', views.addadvert,name= "addadvert"),
     path('advertdetail/<int:id>/', views.advertdetail, name='advertdetail'),
     path('update/<int:id>/', views.update,name= "update"),   
-    path('delete/<int:id>/', views.delete,name= "delete"),   
+    path('delete/<int:advert_id>/', views.delete, name='delete')
 ]

@@ -4,7 +4,6 @@ import django
 from django.utils import timezone
 from django.template.defaultfilters import date as _date
 from channels.db import database_sync_to_async
-from channels.auth import get_user
 
 class Consumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -49,7 +48,7 @@ class Consumer(AsyncWebsocketConsumer):
                 'current_user_id': self.scope['user'].id,
                 'username': db_message.sender.username,
                 'message': message,
-                'profilePicUrl': 'https://mdbootstrap.com/img/new/avatars/2.jpg',
+                'profilePicUrl': db_message.sender.profile_photo.url if db_message.sender.profile_photo else None,
                 'time': _date(timezone.localtime(db_message.created_at), "SHORT_DATETIME_FORMAT")
             }
         )
@@ -100,7 +99,7 @@ class Consumer(AsyncWebsocketConsumer):
 
         inbox.last_message = message
         inbox.updated_at = django.utils.timezone.now()
-        print(inbox.updated_at)
+
         inbox.save()
 
         return message

@@ -64,9 +64,9 @@
                             {% if advert.author != current_user %} 
                             <div class="mt-2 d-flex align-items-center gap-2">
 
-                                {% if user %}
+                                {% if request.user.is_authenticated %}
 
-                                        <a href='{% url 'chat:chat_room' advert.id current_user.id %}'>
+                                        <a href='{% url 'chat:chat_room' advert.id request.user.id %}'>
                                             <button class="{% if advert.author is current_user %} disabled {% endif %}">
                                                 <i class="fa-solid fa-message"></i>
                                             </button>
@@ -79,10 +79,11 @@
                                     </button>
                                 </a>
                                 {% endif %}
-
+                                {% if request.user.is_authenticated %}
                                 <form method="post" action="{% url 'advert:advertdetail' advert.id %}">
                                     {% csrf_token %}
-                                    {% if request.user.is_authenticated and advert in user.favorites.all %}
+
+                                    {% if advert in user.favorites.all %}
                                         <button type="submit" name="favorite" class="mt-3">
                                             <i class="fa fa-heart"></i>
                                         </button>
@@ -96,6 +97,14 @@
                                     <i class="fa-solid fa-flag"></i>
                                 </button>
                             </div>
+
+                            {% else %}
+                            <a href='{% url 'user:login' %}'>
+                                <button>
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </a>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -147,24 +156,14 @@
                         {% if advert.author.profile_photo %}
                             <img class="rounded-circle navbar-profile-photo" src="{{ advert.author.profile_photo.url }}">
                         {% else %}
-                            <img class="rounded-circle navbar-profile-photo" src="https://mdbootstrap.com/img/new/avatars/2.jpg">
+                            <img class="rounded-circle navbar-profile-photo" src="/media/profile_photos/DefaultProfileIcon.png">
                         {% endif %}
 
 
                     
                         <a href="{% url 'user:profile' advert.author.id %}" style="font-size: x-large;">{{advert.author.username}}</a>
 
-                        <div class="review-star me-1">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-regular fa-star-half-stroke"></i>
-                            <i class="fa-regular fa-star"></i>
-                          </div>
 
-                        {% comment %} <div class="body widget">
-                            
-                        </div> {% endcomment %}
                     </div>
                 </div>
             </div>
