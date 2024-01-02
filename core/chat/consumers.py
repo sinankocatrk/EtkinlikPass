@@ -4,6 +4,23 @@ import django
 from django.utils import timezone
 from django.template.defaultfilters import date as _date
 from channels.db import database_sync_to_async
+from cryptography.fernet import Fernet
+
+KEY_FILE = 'message_encrypt.key'
+
+def load_or_create_key():
+    try:
+        with open(KEY_FILE, 'rb') as file:
+            key = file.read().decode()
+    except FileNotFoundError:
+        key = Fernet.generate_key()
+        with open(KEY_FILE, 'wb') as file:
+            file.write(key)
+    return key
+
+key = load_or_create_key()
+print(key)
+cipher_suite = Fernet(key)
 
 class Consumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -37,7 +54,8 @@ class Consumer(AsyncWebsocketConsumer):
             return
 
         inbox = await self.get_or_create_inbox(self.advert_id, self.user_id)
-        db_message = await self.save_message(inbox, message)
+        encrypted_message = self.encrypt_message(message)
+        db_message = await self.save_message(inbox, encrypted_message)
 
         # Grubun tamamına mesaj gönder
         await self.channel_layer.group_send(
@@ -48,7 +66,7 @@ class Consumer(AsyncWebsocketConsumer):
                 'current_user_id': self.scope['user'].id,
                 'username': db_message.sender.username,
                 'message': message,
-                'profilePicUrl': db_message.sender.profile_photo.url if db_message.sender.profile_photo else None,
+                'profilePicUrl': db_message.sender.profile_photo.url if db_message.sender.profile_photo else '/media/profile_photos/DefaultProfileIcon.png',
                 'time': _date(timezone.localtime(db_message.created_at), "SHORT_DATETIME_FORMAT")
             }
         )
@@ -99,7 +117,12 @@ class Consumer(AsyncWebsocketConsumer):
 
         inbox.last_message = message
         inbox.updated_at = django.utils.timezone.now()
-
         inbox.save()
 
         return message
+    
+    def encrypt_message(self, message):
+        if isinstance(message, str):
+            message = message.encode()
+        encrypted_text = cipher_suite.encrypt(message)
+        return encrypted_text.decode()
