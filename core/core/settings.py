@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'api',
     'channels',
     'chat',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [

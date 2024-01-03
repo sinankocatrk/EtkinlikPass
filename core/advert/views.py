@@ -41,9 +41,11 @@ def addadvert(request):
         return redirect("/advert/myadvert")
         
     form = AdvertForm()
+
+    all_events = Event.objects.filter(is_deleted=False)
     context = {
         "form": form,
-        "etkinlikler": Event.objects.all()
+        "etkinlikler": all_events
     }
     return render(request, "addadvert.html", context)
 

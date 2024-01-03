@@ -5,3 +5,4 @@ redis
 uvicorn
 celery
 pip install cryptography
+pip install apscheduler

@@ -14,7 +14,7 @@ from django.template.defaultfilters import date as _date
 from cryptography.fernet import Fernet
 
 
-KEY_FILE = 'message_encrypt.key'
+KEY_FILE = 'keys/message_encrypt.key'
 
 def load_or_create_key():
     try:
@@ -27,7 +27,6 @@ def load_or_create_key():
     return key
 
 key = load_or_create_key()
-print(key)
 cipher_suite = Fernet(key)
 
 class CustomJSONEncoder(DjangoJSONEncoder):
@@ -83,12 +82,9 @@ def inbox(request):
     receiver_inboxes = Inbox.objects.filter(receiver=user)
 
     for inbox in sender_inboxes:
-        print("inbox.last_message.content: ")
-        print(inbox.last_message.content)
         inbox.last_message.content = decrypt_message(inbox.last_message.content)
 
     for inbox in receiver_inboxes:
-        print("inbox.last_message.content: " + str(inbox.last_message.content))
         inbox.last_message.content = decrypt_message(inbox.last_message.content)
 
     context = {
@@ -114,10 +110,8 @@ def get_or_create_chat(advert_id, user_id):
 
 def decrypt_message(encrypted_message):
     encrypted_message = bytes(encrypted_message, 'utf-8')
-    print(type(encrypted_message))
     try:
         decrypted_text = cipher_suite.decrypt(encrypted_message).decode()
-        print(decrypted_text)
         return decrypted_text
     except Exception as e:
         print(f"Hata: {type(e).__name__}, Hata Mesajı: {e}")
