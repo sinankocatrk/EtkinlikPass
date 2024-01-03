@@ -1,31 +1,27 @@
 from django.shortcuts import render
 from advert.models import Advert
+from django.db.models import Q
 
 def index(request):
+    keyword = request.GET.get("keyword", "").strip()
 
+    if keyword:
+        adverts = Advert.objects.filter(
+            Q(event__title__icontains=keyword) |
+            Q(event__description__icontains=keyword) |
+            Q(event__city__icontains=keyword) |
+            Q(event__location__icontains=keyword),
+            is_deleted=False
+        )
+    else:
+        adverts = Advert.objects.filter(is_deleted=False)
 
-    all_adverts = Advert.objects.all()
-
-    undeleted_adverts_count = all_adverts.filter(is_deleted=False).count()
-
-    keyword = request.GET.get("keyword")
-
-
-    if keyword :
-        keyword = keyword.lower()
-        filtered_adverts = Advert.objects.filter(event__title__icontains=keyword)
-        undeleted_filtered_adverts_count = filtered_adverts.filter(is_deleted=False).count()
-        filtered_adverts_context = {
-            "all_adverts": filtered_adverts,
-            "undeleted_adverts_count": undeleted_filtered_adverts_count,
-            "keyword": keyword,
-        }
-        return render(request,"index.html",context=filtered_adverts_context)
+    adverts_count = adverts.count()
 
     context = {
-        "all_adverts": all_adverts,
-        "undeleted_adverts_count": undeleted_adverts_count,
-        "keyword": None
+        "all_adverts": adverts,
+        "undeleted_adverts_count": adverts_count,
+        "keyword": keyword if keyword else "",
     }
 
-    return render(request, "index.html", context)
+    return render(request, "index.html", context=context)

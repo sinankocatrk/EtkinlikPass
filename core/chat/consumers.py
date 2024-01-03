@@ -19,7 +19,6 @@ def load_or_create_key():
     return key
 
 key = load_or_create_key()
-print(key)
 cipher_suite = Fernet(key)
 
 class Consumer(AsyncWebsocketConsumer):

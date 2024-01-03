@@ -21,6 +21,13 @@ def addadvert(request):
             selected_event = form.cleaned_data.get("event")
     
         if selected_event:
+
+            temp_advert = Advert.objects.filter(event=selected_event, author=request.user).first()
+            if temp_advert:
+                messages.info(request, "Bu etkinlik için zaten bir ilanınız var.")
+                return redirect("advert:addadvert")
+
+
             new_advert = Advert()
             new_advert.event = selected_event
             new_advert.seller_description = seller_description

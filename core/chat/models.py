@@ -13,6 +13,9 @@ class Inbox(models.Model):
 
     def __str__(self):
         return f"{self.sender.username} - {self.receiver.username} for {self.advert.event.title}"
+    
+    class Meta:
+        ordering = ['-updated_at']
 
 class Message(models.Model):
     inbox = models.ForeignKey(Inbox, related_name='message', on_delete=models.CASCADE)
