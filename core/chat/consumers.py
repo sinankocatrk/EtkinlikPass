@@ -6,7 +6,7 @@ from django.template.defaultfilters import date as _date
 from channels.db import database_sync_to_async
 from cryptography.fernet import Fernet
 
-KEY_FILE = 'message_encrypt.key'
+KEY_FILE = 'keys/message_encrypt.key'
 
 def load_or_create_key():
     try:
@@ -19,7 +19,6 @@ def load_or_create_key():
     return key
 
 key = load_or_create_key()
-print(key)
 cipher_suite = Fernet(key)
 
 class Consumer(AsyncWebsocketConsumer):

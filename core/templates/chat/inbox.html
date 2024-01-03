@@ -23,18 +23,20 @@
         {% for inbox in sender_inboxes %}
 
           <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}" class="list-group-item list-group-item-action rounded-0" 
-              {% if inbox.last_message.is_read == False and inbox.last_message.sender != current_user %}style="border-left: 5px solid blue;"{% endif %}>
+            {% if inbox.last_message.is_read == False and inbox.last_message.sender != current_user %}style="border-left: 5px solid blue;"{% endif %}>
 
-            <div class="media">
-              <img src="{% if inbox.last_message.sender.profile_photo %}{{inbox.last_message.sender.profile_photo.url}} {% else %} https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png {% endif %}" alt="user" width="50" class="navbar-profile-photo">
-              <div class="media-body ml-4">
-                <div class="d-flex align-items-center justify-content-between mb-1">
-                  <h6 class="mb-0">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
-                  <small class="small font-weight-bold">{{ inbox.updated_at|date:"d M" }}</small>
+              <div class="media">              
+                <div class="media-body ml-4">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div class="d-flex align-items-center">
+                      <img src="{% if inbox.last_message.sender.profile_photo %}{{inbox.last_message.sender.profile_photo.url}} {% else %} https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png {% endif %}" alt="user" width="50" class="navbar-profile-photo">
+                      <h6 class="mb-0 mx-3">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
+                    </div>
+                    <small class="small font-weight-bold align-self-end">{{ inbox.updated_at|date:"d M H:i" }}</small>
+                  </div>
+                  <p class="font-italic text-small mb-0">{% if inbox.last_message.sender == current_user %} Siz: {% endif %} {{ inbox.last_message.content }}</p>
                 </div>
-                <p class="font-italic text-small mb-0">{{ inbox.last_message.content }}</p>
               </div>
-            </div>
           </a>
         {% endfor %}
 
@@ -67,12 +69,14 @@
           <a href="{% url 'chat:chat_room' inbox.advert.id inbox.sender.id %}" class="list-group-item list-group-item-action rounded-0" 
           {% if inbox.last_message.is_read == False and inbox.last_message.sender != current_user %}style="border-left: 5px solid blue;"{% endif %}>
 
-            <div class="media">
-              <img src="{% if inbox.last_message.sender.profile_photo %}{{inbox.last_message.sender.profile_photo.url}} {% else %} https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png {% endif %}" alt="user" width="50" class="navbar-profile-photo">
+            <div class="media">              
               <div class="media-body ml-4">
-                <div class="d-flex align-items-center justify-content-between mb-1">
-                  <h6 class="mb-0">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
-                  <small class="small font-weight-bold">{{ inbox.updated_at|date:"d M H:i" }}</small>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="d-flex align-items-center">
+                    <img src="{% if inbox.last_message.sender.profile_photo %}{{inbox.last_message.sender.profile_photo.url}} {% else %} https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png {% endif %}" alt="user" width="50" class="navbar-profile-photo">
+                    <h6 class="mb-0 mx-3">{{ inbox.sender.username }} - {{ inbox.advert.event.title }}</h6>
+                  </div>
+                  <small class="small font-weight-bold align-self-end">{{ inbox.updated_at|date:"d M H:i" }}</small>
                 </div>
                 <p class="font-italic text-small mb-0">{% if inbox.last_message.sender == current_user %} Siz: {% endif %} {{ inbox.last_message.content }}</p>
               </div>

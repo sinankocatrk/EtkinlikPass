@@ -38,7 +38,7 @@
           
 
           <div class="d-flex align-items-center ml-auto">
-            <a href='{% url 'user:profile' advert.author.id %}' class="mx-1" >{{advert.author.username}}</a>
+            <a href='{% url 'user:profile' advert.author.id %}' class="mx-1" >@{{advert.author.username}}</a>
             <img  class="rounded-circle mx-1 navbar-profile-photo" src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}/media/profile_photos/DefaultProfileIcon.png{% endif %}" height="25" alt="">
 
           </div>
