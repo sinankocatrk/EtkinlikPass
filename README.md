@@ -35,7 +35,7 @@ python manage.py runserver
 After starting the server, the application will be accessible at `http://localhost:8000`. 
 Explore the various functionalities such as signing up as a new user, creating advertisements, viewing upcoming events, and messaging other users.
 
-##Special Thanks to Etkinlik.io API
+## Special Thanks to Etkinlik.io API
 
 We would like to extend our heartfelt gratitude to Etkinlik.io for their exceptional API service, which played a pivotal role in the success of our Event Management Web Application. 
 
